@@ -1,0 +1,43 @@
+[build-system]
+requires = ["uv_build>=0.7.19,<0.8.0"]
+build-backend = "uv_build"
+
+[project]
+name = "uplift-ble"
+version = "0.1.0"
+authors = [
+  { name = "Eric McDonald", email = "106356608+librick@users.noreply.github.com" },
+]
+dependencies = [
+  "bleak>=1.0.1",
+  "typer>=0.16.0",
+]
+
+description = "Python library for controlling Uplift standing desks over Bluetooth Low Energy via the official Uplift BLE adapter"
+readme = "README.md"
+requires-python = ">=3.11"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Framework :: AsyncIO",
+    "Programming Language :: Python :: 3",
+    "Operating System :: Microsoft :: Windows :: Windows 10",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS :: MacOS X",
+]
+license = "MIT"
+license-files = ["LICENSE*"]
+
+[project.urls]
+Homepage = "https://github.com/librick/uplift_ble"
+Issues   = "https://github.com/librick/uplift_ble/issues"
+
+[project.optional-dependencies]
+test = [
+  "pytest>=8.4.1",
+]
+
+[[tool.uv.index]]
+name = "testpypi"
+url = "https://test.pypi.org/simple/"
+publish-url = "https://test.pypi.org/legacy/"
+explicit = true
