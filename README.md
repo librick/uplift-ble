@@ -1,12 +1,12 @@
+# uplift-ble
+
+Unofficial Python library for controlling Uplift standing desks over Bluetooth Low Energy via the [Uplift BLE adapter](https://www.upliftdesk.com/bluetooth-adapter-for-uplift-desk/).
+
 ![Made with Python](https://img.shields.io/badge/Made%20with-Python-3776AB.svg)
 ![PyPI - Version](https://img.shields.io/pypi/v/uplift-ble)
 ![GitHub License](https://img.shields.io/github/license/librick/uplift-ble)
 [![GitHub issues](https://img.shields.io/github/issues/librick/uplift-ble.svg)](https://github.com/librick/uplift-ble/issues)
 ![GitHub Repo stars](https://img.shields.io/github/stars/librick/uplift-ble)
-
-# uplift-ble
-
-Unofficial Python library for controlling Uplift standing desks over Bluetooth Low Energy via the [Uplift BLE adapter](https://www.upliftdesk.com/bluetooth-adapter-for-uplift-desk/).
 
 Benefits:
 - Cross platform (made possible by [Bleak](https://github.com/hbldh/bleak))
@@ -86,7 +86,7 @@ if __name__ == "__main__":
 
 These instructions are intended for Linux users but are likely broadly applicable.
 
-1. **Clone the Repository**  
+1. **Clone the Repository**
    ```bash
    git clone git@github.com:librick/uplift-ble.git
    cd uplift-ble
@@ -195,7 +195,7 @@ All attribute values sent to `0xFE61` (commands) and received from `0xFE62` (not
 | 0x0E   | 1      | `0xF1,0xF1,0x0E,0x01,0x01,0x10,0x7E`      | Set units to inches                    |
 | 0xFE   | 0      | `0xF1,0xF1,0xFE,0x00,0xFE,0x7E`           | Reset                                  |
 
-Some of commands above were found by reverse-engineering the Uplift app (v1.1.0) using tools such as JADX. Specifically, the authors read through the .java code for the activities within the `com.jiecang.app.android.aidesk` namespace. Other commands were found by exhaustive search over the range of all opcodes. 
+Some of commands above were found by reverse-engineering the Uplift app (v1.1.0) using tools such as JADX. Specifically, the authors read through the .java code for the activities within the `com.jiecang.app.android.aidesk` namespace. Other commands were found by exhaustive search over the range of all opcodes.
 
 ### Known Notifications
 
