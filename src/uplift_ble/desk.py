@@ -7,18 +7,31 @@ import asyncio
 from contextlib import suppress
 import functools
 import logging
+from typing import Dict, Optional
 from bleak import BleakClient
 
 from uplift_ble.ble_characteristics import (
+    BLE_CHAR_UUID_DIS_FIRMWARE_REV,
+    BLE_CHAR_UUID_DIS_HARDWARE_REV,
+    BLE_CHAR_UUID_DIS_MANUFACTURER_NAME,
+    BLE_CHAR_UUID_DIS_MODEL_NUMBER,
+    BLE_CHAR_UUID_DIS_PNP_ID,
+    BLE_CHAR_UUID_DIS_SERIAL_NUMBER,
+    BLE_CHAR_UUID_DIS_SOFTWARE_REV,
+    BLE_CHAR_UUID_DIS_SYSTEM_ID,
     BLE_CHAR_UUID_UPLIFT_DESK_CONTROL,
     BLE_CHAR_UUID_UPLIFT_DESK_OUTPUT,
 )
+from uplift_ble.ble_services import BLE_SERVICE_UUID_DEVICE_INFORMATION_SERVICE
 from uplift_ble.packet import (
     PacketNotification,
     create_command_packet,
     parse_notification_packets,
 )
-from uplift_ble.units import convert_mm_to_inches, convert_tenths_of_mm_to_mm
+from uplift_ble.units import (
+    convert_hundredths_of_mm_to_mm,
+    convert_mm_to_inches,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -96,6 +109,47 @@ class Desk:
         for p in packets:
             self._process_notification_packet(p)
 
+    async def get_device_information(self) -> Dict[str, Optional[str]]:
+        """
+        Read standard BLE Device Information Service chars and return them by name.
+        """
+        if not self._connected:
+            await self.connect()
+
+        char_uuids: Dict[str, str] = {
+            "manufacturer_name": BLE_CHAR_UUID_DIS_MANUFACTURER_NAME,
+            "model_number": BLE_CHAR_UUID_DIS_MODEL_NUMBER,
+            "serial_number": BLE_CHAR_UUID_DIS_SERIAL_NUMBER,
+            "hardware_revision": BLE_CHAR_UUID_DIS_HARDWARE_REV,
+            "firmware_revision": BLE_CHAR_UUID_DIS_FIRMWARE_REV,
+            "software_revision": BLE_CHAR_UUID_DIS_SOFTWARE_REV,
+            "system_id": BLE_CHAR_UUID_DIS_SYSTEM_ID,
+            "pnp_id": BLE_CHAR_UUID_DIS_PNP_ID,
+        }
+
+        info: Dict[str, Optional[str]] = {}
+
+        try:
+            self._client.services.get_service(
+                BLE_SERVICE_UUID_DEVICE_INFORMATION_SERVICE
+            )
+        except Exception:
+            return info
+
+        for name, uuid in char_uuids.items():
+            try:
+                raw = await self._client.read_gatt_char(uuid)
+                if not raw:
+                    info[name] = None
+                elif name in ("system_id", "pnp_id"):
+                    info[name] = raw.hex()
+                else:
+                    info[name] = raw.decode("utf-8", errors="ignore").rstrip("\x00")
+            except Exception:
+                info[name] = None
+
+        return info
+
     @command_writer
     def move_up(self) -> bytes:
         return create_command_packet(opcode=0x01, payload=b"")
@@ -171,7 +225,7 @@ class Desk:
     def _process_notification_packet(self, p: PacketNotification):
         if p.opcode == 0x01:
             tenths = int.from_bytes(p.payload, byteorder="big", signed=False)
-            mm = convert_tenths_of_mm_to_mm(tenths)
+            mm = convert_hundredths_of_mm_to_mm(tenths)
             inches = convert_mm_to_inches(mm)
             logger.info(
                 f"- Received packet, opcode=0x{p.opcode:02X}, current height: {mm} mm (~{inches} in)"

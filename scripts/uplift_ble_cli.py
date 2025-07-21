@@ -4,6 +4,7 @@ CLI to test the uplift_ble module.
 """
 
 import asyncio
+import json
 import logging
 
 import typer
@@ -109,6 +110,21 @@ def listen(
         asyncio.run(_listen())
     except KeyboardInterrupt:
         typer.echo("Stopped listening.")
+
+
+@app.command()
+def get_device_information(ctx: typer.Context):
+    """
+    Get standard BLE device information service (DIS) values.
+
+    This implementation is non-exhaustive. It only returns information
+    for a few well-known, standard characteristics.
+    If you think your device supports non-standard characteristics within the standard service,
+    consider using a different tool to dump the values of all readable characteristics.
+    """
+    address = _resolve_address(ctx.obj["address"], ctx.obj["timeout"])
+    device_info = asyncio.run(Desk(address).get_device_information())
+    typer.echo(json.dumps(device_info, indent=4, ensure_ascii=False))
 
 
 @app.command()
