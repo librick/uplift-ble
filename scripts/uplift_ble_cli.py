@@ -89,21 +89,12 @@ def discover(timeout: float = typer.Option(5.0, help="Discovery duration in seco
 
 @app.command()
 def listen(
-    address: Optional[str] = typer.Option(
-        None,
-        "-a",
-        "--address",
-        click_type=MAC_ADDRESS,
-        help="Bluetooth address of the desk",
-    ),
-    timeout: float = typer.Option(
-        5.0, "-t", "--timeout", help="Scan timeout if address omitted"
-    ),
+    ctx: typer.Context,
 ):
     """
     Listen continuously for notifications from the desk and print parsed packets.
     """
-    addr = _resolve_address(address, timeout)
+    addr = _resolve_address(ctx.obj["address"], ctx.obj["timeout"])
     typer.echo(f"Listening for notifications on {addr} (Ctrl-C to stop)…")
 
     async def _listen():
