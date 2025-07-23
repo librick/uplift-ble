@@ -43,14 +43,25 @@ def command_writer(func):
         if not self._connected:
             await self.connect()
 
+        # If we need to send a wake command first, do so here, avoiding recursive case.
+        is_wake_func = func.__name__ == "wake"
+        if self.requires_wake and not is_wake_func:
+            # Send a flurry of wake commands in rapid succession.
+            for i in range(3):
+                await self.wake()
+                await asyncio.sleep(0.1)
+
         # Build and send packet.
         packet: bytes = func(self, *args, **kwargs)
         logger.info(f"{func.__name__}(): sending {len(packet)} bytes: {packet.hex()}")
         await self._client.write_gatt_char(self.char_uuid_control, packet)
 
         # Allow time for any notifications to arrive.
-        logger.info(f"Waiting up to {self._notification_timeout}s for notifications...")
-        await asyncio.sleep(self._notification_timeout)
+        if not is_wake_func:
+            logger.info(
+                f"Waiting up to {self._notification_timeout}s for notifications..."
+            )
+            await asyncio.sleep(self._notification_timeout)
         return packet
 
     return wrapper
@@ -60,11 +71,13 @@ class Desk:
     def __init__(
         self,
         address: str,
+        requires_wake: bool = False,
         char_uuid_control: str = BLE_CHAR_UUID_UPLIFT_DESK_CONTROL,
         char_uuid_output: str = BLE_CHAR_UUID_UPLIFT_DESK_OUTPUT,
         notification_timeout: float = 5.0,
     ):
         self.address = address
+        self.requires_wake = requires_wake
         self.char_uuid_control = char_uuid_control
         self.char_uuid_output = char_uuid_output
         self._client = BleakClient(address)
@@ -78,10 +91,11 @@ class Desk:
             await self._client.connect()
             self._connected = True
             logger.info("Connected.")
-            logger.info(f"Subscribing to notifications on {self.char_uuid_output}")
+            logger.info(f"Subscribing to notifications on {self.char_uuid_output}.")
             await self._client.start_notify(
                 self.char_uuid_output, self._notification_handler
             )
+            logger.info("Subscribed.")
 
     async def disconnect(self):
         if self._connected:
@@ -149,6 +163,10 @@ class Desk:
                 info[name] = None
 
         return info
+
+    @command_writer
+    def wake(self) -> bytes:
+        return create_command_packet(opcode=0x00, payload=b"")
 
     @command_writer
     def move_up(self) -> bytes:

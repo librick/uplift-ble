@@ -124,7 +124,8 @@ def get_device_information(ctx: typer.Context):
     consider using a different tool to dump the values of all readable characteristics.
     """
     address = _resolve_address(ctx.obj["address"], ctx.obj["timeout"])
-    device_info = asyncio.run(Desk(address).get_device_information())
+    requires_wake = ctx.obj["requires_wake"]
+    device_info = asyncio.run(Desk(address, requires_wake).get_device_information())
     typer.echo(json.dumps(device_info, indent=4, ensure_ascii=False))
 
 
@@ -134,7 +135,8 @@ def get_current_height(ctx: typer.Context):
     Get the most recently-received desk height.
     """
     address = _resolve_address(ctx.obj["address"], ctx.obj["timeout"])
-    height_mm = asyncio.run(Desk(address).get_current_height())
+    requires_wake = ctx.obj["requires_wake"]
+    height_mm = asyncio.run(Desk(address, requires_wake).get_current_height())
     if height_mm is None:
         typer.echo("Error: failed to retrieve current height")
         raise typer.Exit(code=1)
@@ -162,11 +164,21 @@ def common_options(
         click_type=click.FloatRange(min=0.0),
         help="Timeout for discovery when address omitted",
     ),
+    requiresWake: bool = typer.Option(
+        False,
+        "-w",
+        "--requires-wake",
+        help="If set, send wake commands prior to subsequent commands",
+    ),
 ):
     """
     Common options injected for commands requiring a desk address.
     """
-    ctx.obj = {"address": address, "timeout": timeout}
+    ctx.obj = {
+        "address": address,
+        "timeout": timeout,
+        "requires_wake": requiresWake,
+    }
 
 
 @app.command()
@@ -175,7 +187,8 @@ def move_up(ctx: typer.Context):
     Move the desk up.
     """
     address = _resolve_address(ctx.obj["address"], ctx.obj["timeout"])
-    packet = asyncio.run(Desk(address).move_up())
+    requires_wake = ctx.obj["requires_wake"]
+    packet = asyncio.run(Desk(address, requires_wake).move_up())
     typer.echo(f"Sent {ctx.info_name} packet to {address}: {packet.hex()}")
 
 
@@ -185,7 +198,8 @@ def move_down(ctx: typer.Context):
     Move the desk down.
     """
     address = _resolve_address(ctx.obj["address"], ctx.obj["timeout"])
-    packet = asyncio.run(Desk(address).move_down())
+    requires_wake = ctx.obj["requires_wake"]
+    packet = asyncio.run(Desk(address, requires_wake).move_down())
     typer.echo(f"Sent {ctx.info_name} packet to {address}: {packet.hex()}")
 
 
@@ -195,7 +209,8 @@ def request_height_limits(ctx: typer.Context):
     Request height limits from the desk.
     """
     address = _resolve_address(ctx.obj["address"], ctx.obj["timeout"])
-    packet = asyncio.run(Desk(address).request_height_limits())
+    requires_wake = ctx.obj["requires_wake"]
+    packet = asyncio.run(Desk(address, requires_wake).request_height_limits())
     typer.echo(f"Sent {ctx.info_name} packet to {address}: {packet.hex()}")
 
 
@@ -209,7 +224,10 @@ def set_calibration_offset(
     Set the calibration offset.
     """
     address = _resolve_address(ctx.obj["address"], ctx.obj["timeout"])
-    packet = asyncio.run(Desk(address).set_calibration_offset(calibration_offset))
+    requires_wake = ctx.obj["requires_wake"]
+    packet = asyncio.run(
+        Desk(address, requires_wake).set_calibration_offset(calibration_offset)
+    )
     typer.echo(f"Sent {ctx.info_name} packet to {address}: {packet.hex()}")
 
 
@@ -223,7 +241,8 @@ def set_height_limit_max(
     Set the maximum height limit.
     """
     address = _resolve_address(ctx.obj["address"], ctx.obj["timeout"])
-    packet = asyncio.run(Desk(address).set_height_limit_max(max_height))
+    requires_wake = ctx.obj["requires_wake"]
+    packet = asyncio.run(Desk(address, requires_wake).set_height_limit_max(max_height))
     typer.echo(f"Sent {ctx.info_name} packet to {address}: {packet.hex()}")
 
 
@@ -238,7 +257,8 @@ def move_to_specified_height(
     Move the desk to a specified height.
     """
     address = _resolve_address(ctx.obj["address"], ctx.obj["timeout"])
-    packet = asyncio.run(Desk(address).move_to_specified_height(height))
+    requires_wake = ctx.obj["requires_wake"]
+    packet = asyncio.run(Desk(address, requires_wake).move_to_specified_height(height))
     typer.echo(f"Sent {ctx.info_name} packet to {address}: {packet.hex()}")
 
 
@@ -248,7 +268,10 @@ def set_current_height_as_height_limit_max(ctx: typer.Context):
     Set current height as the maximum height limit.
     """
     address = _resolve_address(ctx.obj["address"], ctx.obj["timeout"])
-    packet = asyncio.run(Desk(address).set_current_height_as_height_limit_max())
+    requires_wake = ctx.obj["requires_wake"]
+    packet = asyncio.run(
+        Desk(address, requires_wake).set_current_height_as_height_limit_max()
+    )
     typer.echo(f"Sent {ctx.info_name} packet to {address}: {packet.hex()}")
 
 
@@ -258,7 +281,10 @@ def set_current_height_as_height_limit_min(ctx: typer.Context):
     Set current height as the minimum height limit.
     """
     address = _resolve_address(ctx.obj["address"], ctx.obj["timeout"])
-    packet = asyncio.run(Desk(address).set_current_height_as_height_limit_min())
+    requires_wake = ctx.obj["requires_wake"]
+    packet = asyncio.run(
+        Desk(address, requires_wake).set_current_height_as_height_limit_min()
+    )
     typer.echo(f"Sent {ctx.info_name} packet to {address}: {packet.hex()}")
 
 
@@ -268,7 +294,8 @@ def clear_height_limit_max(ctx: typer.Context):
     Clear the maximum height limit.
     """
     address = _resolve_address(ctx.obj["address"], ctx.obj["timeout"])
-    packet = asyncio.run(Desk(address).clear_height_limit_max())
+    requires_wake = ctx.obj["requires_wake"]
+    packet = asyncio.run(Desk(address, requires_wake).clear_height_limit_max())
     typer.echo(f"Sent {ctx.info_name} packet to {address}: {packet.hex()}")
 
 
@@ -278,7 +305,8 @@ def clear_height_limit_min(ctx: typer.Context):
     Clear the minimum height limit.
     """
     address = _resolve_address(ctx.obj["address"], ctx.obj["timeout"])
-    packet = asyncio.run(Desk(address).clear_height_limit_min())
+    requires_wake = ctx.obj["requires_wake"]
+    packet = asyncio.run(Desk(address, requires_wake).clear_height_limit_min())
     typer.echo(f"Sent {ctx.info_name} packet to {address}: {packet.hex()}")
 
 
@@ -288,7 +316,8 @@ def stop_movement(ctx: typer.Context):
     Stop desk movement.
     """
     address = _resolve_address(ctx.obj["address"], ctx.obj["timeout"])
-    packet = asyncio.run(Desk(address).stop_movement())
+    requires_wake = ctx.obj["requires_wake"]
+    packet = asyncio.run(Desk(address, requires_wake).stop_movement())
     typer.echo(f"Sent {ctx.info_name} packet to {address}: {packet.hex()}")
 
 
@@ -301,7 +330,8 @@ def set_units_to_centimeters(
     Set units to centimeters.
     """
     address = _resolve_address(ctx.obj["address"], ctx.obj["timeout"])
-    packet = asyncio.run(Desk(address).set_units_to_centimeters())
+    requires_wake = ctx.obj["requires_wake"]
+    packet = asyncio.run(Desk(address, requires_wake).set_units_to_centimeters())
     typer.echo(f"Sent {ctx.info_name} packet to {address}: {packet.hex()}")
 
 
@@ -314,7 +344,8 @@ def set_units_to_inches(
     Set units to inches.
     """
     address = _resolve_address(ctx.obj["address"], ctx.obj["timeout"])
-    packet = asyncio.run(Desk(address).set_units_to_inches())
+    requires_wake = ctx.obj["requires_wake"]
+    packet = asyncio.run(Desk(address, requires_wake).set_units_to_inches())
     typer.echo(f"Sent {ctx.info_name} packet to {address}: {packet.hex()}")
 
 
@@ -324,7 +355,8 @@ def reset(ctx: typer.Context):
     Reset the desk.
     """
     address = _resolve_address(ctx.obj["address"], ctx.obj["timeout"])
-    packet = asyncio.run(Desk(address).reset())
+    requires_wake = ctx.obj["requires_wake"]
+    packet = asyncio.run(Desk(address, requires_wake).reset())
     typer.echo(f"Sent {ctx.info_name} packet to {address}: {packet.hex()}")
 
 
