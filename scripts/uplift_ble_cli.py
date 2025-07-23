@@ -10,6 +10,7 @@ import logging
 import typer
 from typing import Optional
 
+from param_types import MAC_ADDRESS
 from uplift_ble import units
 from uplift_ble.desk import Desk
 from uplift_ble.scanner import DeskScanner
@@ -89,7 +90,11 @@ def discover(timeout: float = typer.Option(5.0, help="Discovery duration in seco
 @app.command()
 def listen(
     address: Optional[str] = typer.Option(
-        None, "-a", "--address", help="Bluetooth address of the desk"
+        None,
+        "-a",
+        "--address",
+        click_type=MAC_ADDRESS,
+        help="Bluetooth address of the desk",
     ),
     timeout: float = typer.Option(
         5.0, "-t", "--timeout", help="Scan timeout if address omitted"
@@ -148,7 +153,11 @@ def get_current_height(ctx: typer.Context):
 def common_options(
     ctx: typer.Context,
     address: Optional[str] = typer.Option(
-        None, "-a", "--address", help="Bluetooth address of the desk"
+        None,
+        "-a",
+        "--address",
+        click_type=MAC_ADDRESS,
+        help="Bluetooth address of the desk",
     ),
     timeout: float = typer.Option(
         5.0, "-t", "--timeout", help="Timeout for discovery when address omitted"
