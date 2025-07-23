@@ -7,18 +7,31 @@ import asyncio
 from contextlib import suppress
 import functools
 import logging
+from typing import Dict, Optional
 from bleak import BleakClient
 
 from uplift_ble.ble_characteristics import (
+    BLE_CHAR_UUID_DIS_FIRMWARE_REV,
+    BLE_CHAR_UUID_DIS_HARDWARE_REV,
+    BLE_CHAR_UUID_DIS_MANUFACTURER_NAME,
+    BLE_CHAR_UUID_DIS_MODEL_NUMBER,
+    BLE_CHAR_UUID_DIS_PNP_ID,
+    BLE_CHAR_UUID_DIS_SERIAL_NUMBER,
+    BLE_CHAR_UUID_DIS_SOFTWARE_REV,
+    BLE_CHAR_UUID_DIS_SYSTEM_ID,
     BLE_CHAR_UUID_UPLIFT_DESK_CONTROL,
     BLE_CHAR_UUID_UPLIFT_DESK_OUTPUT,
 )
+from uplift_ble.ble_services import BLE_SERVICE_UUID_DEVICE_INFORMATION_SERVICE
 from uplift_ble.packet import (
     PacketNotification,
     create_command_packet,
     parse_notification_packets,
 )
-from uplift_ble.units import convert_mm_to_inches, convert_tenths_of_mm_to_mm
+from uplift_ble.units import (
+    convert_hundredths_of_mm_to_mm,
+    convert_mm_to_in,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -30,14 +43,25 @@ def command_writer(func):
         if not self._connected:
             await self.connect()
 
+        # If we need to send a wake command first, do so here, avoiding recursive case.
+        is_wake_func = func.__name__ == "wake"
+        if self.requires_wake and not is_wake_func:
+            # Send a flurry of wake commands in rapid succession.
+            for i in range(3):
+                await self.wake()
+                await asyncio.sleep(0.1)
+
         # Build and send packet.
         packet: bytes = func(self, *args, **kwargs)
         logger.info(f"{func.__name__}(): sending {len(packet)} bytes: {packet.hex()}")
         await self._client.write_gatt_char(self.char_uuid_control, packet)
 
         # Allow time for any notifications to arrive.
-        logger.info(f"Waiting up to {self._notification_timeout}s for notifications...")
-        await asyncio.sleep(self._notification_timeout)
+        if not is_wake_func:
+            logger.info(
+                f"Waiting up to {self._notification_timeout}s for notifications..."
+            )
+            await asyncio.sleep(self._notification_timeout)
         return packet
 
     return wrapper
@@ -47,11 +71,13 @@ class Desk:
     def __init__(
         self,
         address: str,
+        requires_wake: bool = False,
         char_uuid_control: str = BLE_CHAR_UUID_UPLIFT_DESK_CONTROL,
         char_uuid_output: str = BLE_CHAR_UUID_UPLIFT_DESK_OUTPUT,
         notification_timeout: float = 5.0,
     ):
         self.address = address
+        self.requires_wake = requires_wake
         self.char_uuid_control = char_uuid_control
         self.char_uuid_output = char_uuid_output
         self._client = BleakClient(address)
@@ -65,10 +91,11 @@ class Desk:
             await self._client.connect()
             self._connected = True
             logger.info("Connected.")
-            logger.info(f"Subscribing to notifications on {self.char_uuid_output}")
+            logger.info(f"Subscribing to notifications on {self.char_uuid_output}.")
             await self._client.start_notify(
                 self.char_uuid_output, self._notification_handler
             )
+            logger.info("Subscribed.")
 
     async def disconnect(self):
         if self._connected:
@@ -95,6 +122,51 @@ class Desk:
         logger.info(f"Received {len(packets)} notification packet(s).")
         for p in packets:
             self._process_notification_packet(p)
+
+    async def get_device_information(self) -> Dict[str, Optional[str]]:
+        """
+        Read standard BLE Device Information Service chars and return them by name.
+        """
+        if not self._connected:
+            await self.connect()
+
+        char_uuids: Dict[str, str] = {
+            "manufacturer_name": BLE_CHAR_UUID_DIS_MANUFACTURER_NAME,
+            "model_number": BLE_CHAR_UUID_DIS_MODEL_NUMBER,
+            "serial_number": BLE_CHAR_UUID_DIS_SERIAL_NUMBER,
+            "hardware_revision": BLE_CHAR_UUID_DIS_HARDWARE_REV,
+            "firmware_revision": BLE_CHAR_UUID_DIS_FIRMWARE_REV,
+            "software_revision": BLE_CHAR_UUID_DIS_SOFTWARE_REV,
+            "system_id": BLE_CHAR_UUID_DIS_SYSTEM_ID,
+            "pnp_id": BLE_CHAR_UUID_DIS_PNP_ID,
+        }
+
+        info: Dict[str, Optional[str]] = {}
+
+        try:
+            self._client.services.get_service(
+                BLE_SERVICE_UUID_DEVICE_INFORMATION_SERVICE
+            )
+        except Exception:
+            return info
+
+        for name, uuid in char_uuids.items():
+            try:
+                raw = await self._client.read_gatt_char(uuid)
+                if not raw:
+                    info[name] = None
+                elif name in ("system_id", "pnp_id"):
+                    info[name] = raw.hex()
+                else:
+                    info[name] = raw.decode("utf-8", errors="ignore").rstrip("\x00")
+            except Exception:
+                info[name] = None
+
+        return info
+
+    @command_writer
+    def wake(self) -> bytes:
+        return create_command_packet(opcode=0x00, payload=b"")
 
     @command_writer
     def move_up(self) -> bytes:
@@ -171,8 +243,8 @@ class Desk:
     def _process_notification_packet(self, p: PacketNotification):
         if p.opcode == 0x01:
             tenths = int.from_bytes(p.payload, byteorder="big", signed=False)
-            mm = convert_tenths_of_mm_to_mm(tenths)
-            inches = convert_mm_to_inches(mm)
+            mm = convert_hundredths_of_mm_to_mm(tenths)
+            inches = convert_mm_to_in(mm)
             logger.info(
                 f"- Received packet, opcode=0x{p.opcode:02X}, current height: {mm} mm (~{inches} in)"
             )
@@ -184,13 +256,13 @@ class Desk:
             )
         elif p.opcode == 0x10:
             mm = int.from_bytes(p.payload, byteorder="big", signed=False)
-            inches = convert_mm_to_inches(mm)
+            inches = convert_mm_to_in(mm)
             logger.info(
                 f"- Received packet, opcode=0x{p.opcode:02X}, calibration height: {mm} mm (~{inches} in)"
             )
         elif p.opcode == 0x11:
             mm = int.from_bytes(p.payload, byteorder="big", signed=False)
-            inches = convert_mm_to_inches(mm)
+            inches = convert_mm_to_in(mm)
             logger.info(
                 f"- Received packet, opcode=0x{p.opcode:02X}, height limit max: {mm} mm (~{inches} in)"
             )

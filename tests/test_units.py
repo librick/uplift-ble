@@ -1,7 +1,7 @@
 import pytest
 from uplift_ble.units import (
-    convert_mm_to_inches,
-    convert_tenths_of_mm_to_mm,
+    convert_mm_to_in,
+    convert_hundredths_of_mm_to_mm,
     round_half_up,
 )
 
@@ -15,17 +15,17 @@ from uplift_ble.units import (
         (762, 29.7),
     ],
 )
-def test_convert_mm_to_inches(input: float, expected: float):
-    actual = convert_mm_to_inches(input)
+def test_convert_mm_to_in(input: float, expected: float):
+    actual = convert_mm_to_in(input)
     assert actual == expected
 
 
 @pytest.mark.parametrize(
     "input,expected",
-    [(0, 0), (10, 1), (100, 10), (1000, 100), (4, 0), (5, 1), (6, 1)],
+    [(0, 0), (100, 1), (1000, 10), (10000, 100), (40, 0), (50, 1), (60, 1)],
 )
-def test_convert_tenths_of_mm_to_mm(input: float, expected: float):
-    actual = convert_tenths_of_mm_to_mm(input)
+def test_convert_hundredths_of_mm_to_mm(input: float, expected: float):
+    actual = convert_hundredths_of_mm_to_mm(input)
     assert actual == expected
 
 

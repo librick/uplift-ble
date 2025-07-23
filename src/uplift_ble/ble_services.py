@@ -11,5 +11,7 @@ https://www.bluetooth.com/specifications/assigned-numbers/
 
 from bleak.uuids import normalize_uuid_16
 
+# UUID for the BLE Device Information Service (DIS).
+BLE_SERVICE_UUID_DEVICE_INFORMATION_SERVICE: str = normalize_uuid_16(0x180A)
 # UUID for a service which allows clients to discover nearby Uplift adapters.
 BLE_SERVICE_UUID_UPLIFT_DISCOVERY: str = normalize_uuid_16(0xFE60)
