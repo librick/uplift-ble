@@ -1,6 +1,6 @@
 import pytest
 from uplift_ble.units import (
-    convert_mm_to_inches,
+    convert_mm_to_in,
     convert_hundredths_of_mm_to_mm,
     round_half_up,
 )
@@ -15,8 +15,8 @@ from uplift_ble.units import (
         (762, 29.7),
     ],
 )
-def test_convert_mm_to_inches(input: float, expected: float):
-    actual = convert_mm_to_inches(input)
+def test_convert_mm_to_in(input: float, expected: float):
+    actual = convert_mm_to_in(input)
     assert actual == expected
 
 

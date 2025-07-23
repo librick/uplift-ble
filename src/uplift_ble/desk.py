@@ -30,7 +30,7 @@ from uplift_ble.packet import (
 )
 from uplift_ble.units import (
     convert_hundredths_of_mm_to_mm,
-    convert_mm_to_inches,
+    convert_mm_to_in,
 )
 
 logger = logging.getLogger(__name__)
@@ -226,7 +226,7 @@ class Desk:
         if p.opcode == 0x01:
             tenths = int.from_bytes(p.payload, byteorder="big", signed=False)
             mm = convert_hundredths_of_mm_to_mm(tenths)
-            inches = convert_mm_to_inches(mm)
+            inches = convert_mm_to_in(mm)
             logger.info(
                 f"- Received packet, opcode=0x{p.opcode:02X}, current height: {mm} mm (~{inches} in)"
             )
@@ -238,13 +238,13 @@ class Desk:
             )
         elif p.opcode == 0x10:
             mm = int.from_bytes(p.payload, byteorder="big", signed=False)
-            inches = convert_mm_to_inches(mm)
+            inches = convert_mm_to_in(mm)
             logger.info(
                 f"- Received packet, opcode=0x{p.opcode:02X}, calibration height: {mm} mm (~{inches} in)"
             )
         elif p.opcode == 0x11:
             mm = int.from_bytes(p.payload, byteorder="big", signed=False)
-            inches = convert_mm_to_inches(mm)
+            inches = convert_mm_to_in(mm)
             logger.info(
                 f"- Received packet, opcode=0x{p.opcode:02X}, height limit max: {mm} mm (~{inches} in)"
             )

@@ -7,10 +7,12 @@ import asyncio
 import json
 import logging
 
+import click
 import typer
 from typing import Optional
 
-from param_types import MAC_ADDRESS
+from param_type_height import HEIGHT
+from param_type_mac_address import MAC_ADDRESS
 from uplift_ble import units
 from uplift_ble.desk import Desk
 from uplift_ble.scanner import DeskScanner
@@ -94,8 +96,11 @@ def listen(
     """
     Listen continuously for notifications from the desk and print parsed packets.
     """
-    addr = _resolve_address(ctx.obj["address"], ctx.obj["timeout"])
-    typer.echo(f"Listening for notifications on {addr} (Ctrl-C to stop)…")
+    timeout = ctx.obj["timeout"]
+    addr = _resolve_address(ctx.obj["address"], timeout)
+    typer.echo(
+        f"Listening for notifications on {addr} with a timeout of {timeout} second(s) (Ctrl-C to stop)…"
+    )
 
     async def _listen():
         async with Desk(addr) as desk:
@@ -134,7 +139,7 @@ def get_current_height(ctx: typer.Context):
         typer.echo("Error: failed to retrieve current height")
         raise typer.Exit(code=1)
     else:
-        height_in = units.convert_mm_to_inches(mm=height_mm)
+        height_in = units.convert_mm_to_in(mm=height_mm)
         typer.echo(
             f"Received current desk height: {height_mm} mm, approx {height_in} inches."
         )
@@ -151,7 +156,11 @@ def common_options(
         help="Bluetooth address of the desk",
     ),
     timeout: float = typer.Option(
-        5.0, "-t", "--timeout", help="Timeout for discovery when address omitted"
+        5.0,
+        "-t",
+        "--timeout",
+        click_type=click.FloatRange(min=0.0),
+        help="Timeout for discovery when address omitted",
     ),
 ):
     """
@@ -221,7 +230,9 @@ def set_height_limit_max(
 @app.command()
 def move_to_specified_height(
     ctx: typer.Context,
-    height: int = typer.Argument(..., help="Target height (0-65535)"),
+    height: int = typer.Argument(
+        ..., click_type=HEIGHT, help="Target height (0-65535)"
+    ),
 ):
     """
     Move the desk to a specified height.
