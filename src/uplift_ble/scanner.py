@@ -1,6 +1,6 @@
 from bleak import BleakScanner
 
-from uplift_ble.ble_services import BLE_SERVICE_UUID_UPLIFT_DISCOVERY
+from uplift_ble.ble_services import BLE_SERVICE_UUIDS_UPLIFT_DISCOVERY
 
 
 class DeskScanner:
@@ -12,7 +12,7 @@ class DeskScanner:
         # Currently this scanner only discovers Uplift desks by service UUID.
         # To support other desk makes/models, refactor to accept a list of service UUIDs or
         # subclass/configure different desk scanners.
-        target_services = [BLE_SERVICE_UUID_UPLIFT_DISCOVERY]
+        target_services = BLE_SERVICE_UUIDS_UPLIFT_DISCOVERY
         devices = await BleakScanner.discover(
             timeout=timeout, service_uuids=target_services
         )

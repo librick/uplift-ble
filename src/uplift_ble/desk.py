@@ -19,8 +19,6 @@ from uplift_ble.ble_characteristics import (
     BLE_CHAR_UUID_DIS_SERIAL_NUMBER,
     BLE_CHAR_UUID_DIS_SOFTWARE_REV,
     BLE_CHAR_UUID_DIS_SYSTEM_ID,
-    BLE_CHAR_UUID_UPLIFT_DESK_CONTROL,
-    BLE_CHAR_UUID_UPLIFT_DESK_OUTPUT,
 )
 from uplift_ble.ble_services import BLE_SERVICE_UUID_DEVICE_INFORMATION_SERVICE
 from uplift_ble.packet import (
@@ -72,14 +70,14 @@ class Desk:
         self,
         address: str,
         requires_wake: bool = False,
-        char_uuid_control: str = BLE_CHAR_UUID_UPLIFT_DESK_CONTROL,
-        char_uuid_output: str = BLE_CHAR_UUID_UPLIFT_DESK_OUTPUT,
+        char_uuid_control: str = None,
+        char_uuid_output: str = None,
         notification_timeout: float = 5.0,
     ):
         self.address = address
         self.requires_wake = requires_wake
-        self.char_uuid_control = char_uuid_control
-        self.char_uuid_output = char_uuid_output
+        self.char_uuid_control: str | None = char_uuid_control
+        self.char_uuid_output: str | None = char_uuid_output
         self._client = BleakClient(address)
         self._connected = False
         self._notification_timeout = notification_timeout
@@ -91,6 +89,9 @@ class Desk:
             await self._client.connect()
             self._connected = True
             logger.info("Connected.")
+            self.char_uuid_control = self.char_uuid_control if self.char_uuid_control else self._find_uuid_control_characteristic()
+            logger.info(f"Using control characteristic: {self.char_uuid_control}.")
+            self.char_uuid_output = self.char_uuid_output if self.char_uuid_output else self._find_uuid_notify_characteristic()
             logger.info(f"Subscribing to notifications on {self.char_uuid_output}.")
             await self._client.start_notify(
                 self.char_uuid_output, self._notification_handler
@@ -112,6 +113,18 @@ class Desk:
 
     async def __aexit__(self, exc_type, exc, tb):
         await self.disconnect()
+
+    def _find_uuid_control_characteristic(self,):
+        characteristics = [c.uuid for c in self._client.services.characteristics.values() if "write-without-response" in c.properties]
+        if not characteristics:
+            raise ValueError("No characteristics with 'write-without-response' properties found for this desk")
+        return characteristics[0]
+
+    def _find_uuid_notify_characteristic(self, ):
+        characteristics = [c.uuid for c in self._client.services.characteristics.values() if "notify" in c.properties]
+        if not characteristics:
+            raise ValueError("No characteristics with 'notify' properties found for this desk")
+        return characteristics[0]
 
     def _notification_handler(self, sender: int, data: bytearray):
         """

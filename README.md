@@ -144,15 +144,15 @@ Valid desk commands were discovered by some combination of the following techniq
 
 ## Protocol
 
-The [Uplift Desk Bluetooth adapter](https://www.upliftdesk.com/bluetooth-adapter-for-uplift-desk/) uses a proprietary byte-oriented protocol over the Bluetooth Low Energy (BLE) Generic Attribute Profile (GATT). There are two vendor-defined characteristics: one for sending commands to the Bluetooth adapter (`0xFE61`) and one on which notifications are raised such that clients can receive information from the Bluetooth adapter (`0xFE62`).
+The [Uplift Desk Bluetooth adapter](https://www.upliftdesk.com/bluetooth-adapter-for-uplift-desk/) uses a proprietary byte-oriented protocol over the Bluetooth Low Energy (BLE) Generic Attribute Profile (GATT). There are two vendor-defined characteristics: one for sending commands to the Bluetooth adapter and one on which notifications are raised such that clients can receive information from the Bluetooth adapter.
 
-| GATT Characteristic | Purpose                                                             |
-| ------------------- | ------------------------------------------------------------------- |
-| 0xFE61              | Desk control. Clients write to this to send commands to the server. |
-| 0xFE62              | Desk output. The server sends notifications on this for clients.    |
+| GATT Characteristic | Purpose                                                          |
+|---------------------|------------------------------------------------------------------|
+| 0xFE61 \| 0xFF01    | Desk control. Clients write to this to send commands to the server. |
+| 0xFE62 \| 0xFF02    | Desk output. The server sends notifications on this for clients. |
 
 ### Attribute Value Format
-All attribute values sent to `0xFE61` (commands) and received from `0xFE62` (notifications) follow the same byte-oriented format. Each attribute value consists of two sync bytes (`0xF1F1` for commands, `0xF2F2` for notifications), an opcode byte, a length byte, an optional payload, a checksum byte, and a terminator byte (always `0x7E`).
+All attribute values sent to desk control characteristic (commands) and received from desk output characteristic (notifications) follow the same byte-oriented format. Each attribute value consists of two sync bytes (`0xF1F1` for commands, `0xF2F2` for notifications), an opcode byte, a length byte, an optional payload, a checksum byte, and a terminator byte (always `0x7E`).
 
 #### Attribute Value Format, Commands:
 ```txt
