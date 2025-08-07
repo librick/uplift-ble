@@ -15,5 +15,7 @@ from bleak.uuids import normalize_uuid_16
 BLE_SERVICE_UUID_GENERIC_ACCESS_SERVICE: str = normalize_uuid_16(0x1800)
 # UUID for the BLE Device Information Service (DIS).
 BLE_SERVICE_UUID_DEVICE_INFORMATION_SERVICE: str = normalize_uuid_16(0x180A)
-# UUID for a service which allows clients to discover nearby Uplift adapters.
-BLE_SERVICE_UUID_UPLIFT_DISCOVERY: str = normalize_uuid_16(0xFE60)
+# UUID for vendor-specific discovery service. Based on reverse-engineered Uplift app code.
+BLE_SERVICE_UUID_UPLIFT_DISCOVERY_LIERDA_V1: str = normalize_uuid_16(0xFF12)
+# UUID for vendor-specific discovery service. Based on reverse-engineered Uplift app code.
+BLE_SERVICE_UUID_UPLIFT_DISCOVERY_LIERDA_V2: str = normalize_uuid_16(0xFE60)

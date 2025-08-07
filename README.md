@@ -38,17 +38,17 @@ from uplift_ble.scanner import DeskScanner
 
 async def main():
     # The `DeskScanner` class is used to discover nearby desk adapters and their Bluetooth MAC addresses.
-    addresses = await DeskScanner.discover()
+    devices = await DeskScanner.discover()
 
-    if len(addresses) == 0:
+    if len(devices) == 0:
         print("Error: no desks found.", file=sys.stderr)
         sys.exit(1)
-    elif len(addresses) > 1:
+    elif len(devices) > 1:
         print("Error: multiple desks found. Exiting for safety.", file=sys.stderr)
         sys.exit(1)
 
     # The `Desk` class represents a desk and supports the async context manager API.
-    async with Desk(address=addresses[0]) as desk:
+    async with Desk(address=devices[0].address) as desk:
         height_before_move = await desk.get_current_height()
         await desk.move_up()
         height_after_move = await desk.get_current_height()
