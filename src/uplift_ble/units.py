@@ -9,7 +9,7 @@ def convert_mm_to_in(mm: int | float) -> float:
     return round_half_up(mm * 0.039, num_digits=1)
 
 
-def convert_hundredths_of_mm_to_mm(hundredths_of_mm: int | float) -> float:
+def convert_hundredths_mm_to_whole_mm(hundredths_of_mm: int) -> int:
     """
     Converts a value in hundredths of a millimeter to millimeters, rounding using half-up to the nearest whole number.
     """

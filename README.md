@@ -183,7 +183,7 @@ Some of commands above were found by reverse-engineering the Uplift app (v1.1.0)
 | Opcode | Payload Length | Purpose                                                                               | Factory Value (taken from V2-Commercial model) |
 |--------|----------------|---------------------------------------------------------------------------------------|------------------------------------------------|
 | 0x01   |       3        | Reports the height of the desk in 0.01 mm (10 µm) increments.                         | Unknown                                        |
-| 0x04   |       0        | Seen when the desk is in an error state and the display shows **ASR**.                | N/A                                            |
+| 0x04   |       0        | Seen when the desk is in an error state and the display shows **RST**.                | N/A                                            |
 | 0x10   |       2        | Reports the calibration offset in millimeters (2‑byte, big‑endian).                   | `572`                                          |
 | 0x11   |       2        | Reports the max height limit in millimeters (2‑byte, big‑endian).                     | `671`                                          |
 | 0x12   |       2        | Reports some configuration value. The corresponding command is potentially dangerous. | Unknown                                        |
@@ -210,8 +210,8 @@ This table summarizes some examples of what the Desk's display shows for various
 | 762                     | inches    | 30.1                                                                 |
 | 2537                    | inches    | 100                                                                  |
 | 25396                   | inches    | 999                                                                  |
-| 25397                   | inches    | *Weird state!* Display shows **ASR** but desk can still move.        |
-| 65535                   | inches    | *Weird state!* Display shows **ASR** but desk can still move.        |
+| 25397                   | inches    | *Weird state!* Display shows **RST** but desk can still move.        |
+| 65535                   | inches    | *Weird state!* Display shows **RST** but desk can still move.        |
 
 
 ## Security of the Uplift BLE Adapter
