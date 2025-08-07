@@ -19,8 +19,3 @@ BLE_CHAR_UUID_DIS_FIRMWARE_REV = normalize_uuid_16(0x2A26)
 BLE_CHAR_UUID_DIS_SOFTWARE_REV = normalize_uuid_16(0x2A28)
 BLE_CHAR_UUID_DIS_SYSTEM_ID = normalize_uuid_16(0x2A23)
 BLE_CHAR_UUID_DIS_PNP_ID = normalize_uuid_16(0x2A50)
-
-# UUID for sending control commands to the Uplift BLE adapter.
-BLE_CHAR_UUID_UPLIFT_DESK_CONTROL: str = normalize_uuid_16(0xFE61)
-# UUID for receiving status and output values from the Uplift BLE adapter.
-BLE_CHAR_UUID_UPLIFT_DESK_OUTPUT: str = normalize_uuid_16(0xFE62)
