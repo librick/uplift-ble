@@ -1,7 +1,7 @@
 import pytest
 from uplift_ble.units import (
     convert_mm_to_in,
-    convert_hundredths_of_mm_to_mm,
+    convert_hundredths_mm_to_whole_mm,
     round_half_up,
 )
 
@@ -24,8 +24,8 @@ def test_convert_mm_to_in(input: float, expected: float):
     "input,expected",
     [(0, 0), (100, 1), (1000, 10), (10000, 100), (40, 0), (50, 1), (60, 1)],
 )
-def test_convert_hundredths_of_mm_to_mm(input: float, expected: float):
-    actual = convert_hundredths_of_mm_to_mm(input)
+def test_convert_hundredths_mm_to_whole_mm(input: float, expected: int):
+    actual = convert_hundredths_mm_to_whole_mm(input)
     assert actual == expected
 
 

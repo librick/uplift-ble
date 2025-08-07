@@ -7,7 +7,7 @@ import asyncio
 from contextlib import suppress
 import functools
 import logging
-from typing import Dict, Optional
+from typing import Callable, Dict, Optional
 from bleak import BleakClient
 
 from uplift_ble.ble_characteristics import (
@@ -29,7 +29,7 @@ from uplift_ble.packet import (
     parse_notification_packets,
 )
 from uplift_ble.units import (
-    convert_hundredths_of_mm_to_mm,
+    convert_hundredths_mm_to_whole_mm,
     convert_mm_to_in,
 )
 
@@ -68,6 +68,20 @@ def command_writer(func):
 
 
 class Desk:
+    """
+    BLE controller for standing desk.
+
+    Attributes:
+        on_notification_height: Called when a height notification is received.
+            Receives height in millimeters.
+        on_notification_rst: Called when an RST/error notification is received.
+            The desk likely requires a manual reset when this fires.
+        on_notification_calibration_height: Called when a calibration height notification is received.
+            Receives calibration height in millimeters.
+        on_notification_height_limit_max: Called when a height limit max notification is received.
+            Receives height limit max in millimeters.
+    """
+
     def __init__(
         self,
         address: str,
@@ -83,7 +97,13 @@ class Desk:
         self._client = BleakClient(address)
         self._connected = False
         self._notification_timeout = notification_timeout
-        self._last_known_height_mm: float | None = None
+        self._last_known_height_mm: int | None = None
+
+        # Callbacks
+        self.on_notification_height: Optional[Callable[[int], None]] = None
+        self.on_notification_rst: Optional[Callable[[], None]] = None
+        self.on_notification_calibration_height: Optional[Callable[[int], None]] = None
+        self.on_notification_height_limit_max: Optional[Callable[[int], None]] = None
 
     async def connect(self):
         if not self._connected:
@@ -241,7 +261,7 @@ class Desk:
     def reset(self) -> bytes:
         return create_command_packet(opcode=0xFE, payload=b"")
 
-    async def get_current_height(self) -> float | None:
+    async def get_current_height(self) -> int | None:
         """
         Requests a height update and returns the last observed desk height in mm.
         """
@@ -250,30 +270,42 @@ class Desk:
 
     def _process_notification_packet(self, p: PacketNotification):
         if p.opcode == 0x01:
-            tenths = int.from_bytes(p.payload, byteorder="big", signed=False)
-            mm = convert_hundredths_of_mm_to_mm(tenths)
+            hundredths_of_mm = int.from_bytes(p.payload, byteorder="big", signed=False)
+            mm = convert_hundredths_mm_to_whole_mm(hundredths_of_mm)
             inches = convert_mm_to_in(mm)
             logger.info(
                 f"- Received packet, opcode=0x{p.opcode:02X}, current height: {mm} mm (~{inches} in)"
             )
             # Important! Update the class state with this most-recently reported height.
             self._last_known_height_mm = mm
+            # Invoke callback.
+            if self.on_notification_height is not None:
+                self.on_notification_height(mm)
         elif p.opcode == 0x04:
             logger.info(
-                f"- Received packet, opcode=0x{p.opcode:02X}, desk is reporting an error state (ASR) and likely needs to be manually reset"
+                f"- Received packet, opcode=0x{p.opcode:02X}, desk is reporting an error state (RST) and likely needs to be manually reset"
             )
+            # Invoke callback.
+            if self.on_notification_rst is not None:
+                self.on_notification_rst()
         elif p.opcode == 0x10:
             mm = int.from_bytes(p.payload, byteorder="big", signed=False)
             inches = convert_mm_to_in(mm)
             logger.info(
                 f"- Received packet, opcode=0x{p.opcode:02X}, calibration height: {mm} mm (~{inches} in)"
             )
+            # Invoke callback.
+            if self.on_notification_calibration_height is not None:
+                self.on_notification_calibration_height(mm)
         elif p.opcode == 0x11:
             mm = int.from_bytes(p.payload, byteorder="big", signed=False)
             inches = convert_mm_to_in(mm)
             logger.info(
                 f"- Received packet, opcode=0x{p.opcode:02X}, height limit max: {mm} mm (~{inches} in)"
             )
+            # Invoke callback.
+            if self.on_notification_height_limit_max is not None:
+                self.on_notification_height_limit_max(mm)
         elif p.opcode == 0x12:
             # Avoid running the command with the 0x12 opcode!
             # The 0x12 command takes a 2-byte payload, but setting it to various values causes strange and potentially dangerous behavior.
