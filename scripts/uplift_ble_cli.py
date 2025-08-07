@@ -9,16 +9,28 @@ import logging
 
 import click
 import typer
-from typing import Optional
+from typing import List, Optional
 
 from param_type_height import HEIGHT
 from param_type_mac_address import MAC_ADDRESS
 from uplift_ble import units
 from uplift_ble.desk import Desk
-from uplift_ble.scanner import DeskScanner
+from uplift_ble.scanner import DeskScanner, DiscoveredDesk
 
 logging.basicConfig(level=logging.INFO)
 app = typer.Typer(help="uplift-ble command line tool for controlling with uplift desks")
+
+
+def _json_dump_devices(devices: List[DiscoveredDesk]) -> str:
+    devices_data = [
+        {
+            "address": device.address,
+            "name": device.name,
+            "advertised_service_uuids": device.advertised_service_uuids,
+        }
+        for device in devices
+    ]
+    return json.dumps(devices_data, indent=2)
 
 
 def _resolve_address(address: Optional[str], timeout: float) -> str:
@@ -29,18 +41,18 @@ def _resolve_address(address: Optional[str], timeout: float) -> str:
     if address:
         return address
     typer.echo("No address provided, scanning for Uplift desks…")
-    addresses = asyncio.run(DeskScanner.discover(timeout))
-    if not addresses:
-        typer.echo("Error: no uplift desks found.")
+    devices = asyncio.run(DeskScanner.discover(timeout))
+    if not devices:
+        typer.echo("Error: no Uplift desks found.")
         raise typer.Exit(code=1)
-    if len(addresses) > 1:
+    if len(devices) > 1:
         typer.echo(
-            f"Error: multiple desks found ({len(addresses)}). Please specify one explicitly."
+            f"Error: multiple desks found ({len(devices)}). Please specify one explicitly."
         )
-        for addr in addresses:
-            typer.echo(f"- {addr}")
+        devices_json = _json_dump_devices(devices)
+        typer.echo(devices_json)
         raise typer.Exit(code=1)
-    return addresses[0]
+    return devices[0].address
 
 
 def _check_manual_reset(ctx: typer.Context, param, value: bool) -> bool:
@@ -80,13 +92,14 @@ def discover(timeout: float = typer.Option(5.0, help="Discovery duration in seco
     """
     Discover nearby Uplift desks by BLE service UUID.
     """
-    addresses = asyncio.run(DeskScanner.discover(timeout))
-    if not addresses:
-        typer.echo("No uplift desks found.")
+    devices = asyncio.run(DeskScanner.discover(timeout))
+    if not devices:
+        typer.echo("No Uplift desks found.")
         raise typer.Exit(code=1)
-    typer.echo("Discovered Uplift desk addresses:")
-    for addr in addresses:
-        typer.echo(f"- {addr}")
+
+    typer.echo("Discovered one or more devices that look like Uplift desks:")
+    devices_json = _json_dump_devices(devices)
+    typer.echo(devices_json)
 
 
 @app.command()
