@@ -114,28 +114,6 @@ These instructions are intended for Linux users but are likely broadly applicabl
     python3 scripts/uplift_ble_cli.py --help
     ```
 
-### CLI Examples
-
-Display help and available commands:
-```bash
-python3 scripts/uplift_ble_cli.py --help
-```
-
-Find nearby desks:
-```bash
-python3 scripts/uplift_ble_cli.py discover
-```
-
-Get the current desk height:
-```bash
-python3 scripts/uplift_ble_cli.py get-current-height
-```
-
-Move desk to a specified height (e.g., 22 inches, approximately 610 millimeters):
-```bash
-python3 scripts/uplift_ble_cli.py move-to-specified-height 610
-```
-
 ## Reverse Engineering
 Valid desk commands were discovered by some combination of the following techniques:
 - Reverse-engineered from the source code of the [Uplift Desk App](https://play.google.com/store/apps/details?id=app.android.uplifts&hl=en_US) on Google Play
@@ -182,6 +160,8 @@ All attribute values sent to `0xFE61` (commands) and received from `0xFE62` (not
 | ------ | ------ | ----------------------------------------- | -------------------------------------- |
 | 0x01   | 0      | `0xF1,0xF1,0x01,0x00,0x01,0x7E`           | Move desk up                           |
 | 0x02   | 0      | `0xF1,0xF1,0x02,0x00,0x02,0x7E`           | Move desk down                         |
+| 0x05   | 0      | `0xF1,0xF1,0x05,0x00,0x05,0x7E`           | Move to height preset 1                |
+| 0x06   | 0      | `0xF1,0xF1,0x06,0x00,0x06,0x7E`           | Move to height preset 2                |
 | 0x07   | 0      | `0xF1,0xF1,0x07,0x00,0x07,0x7E`           | Request height limits                  |
 | 0x10   | 2      | `0xF1,0xF1,0x10,0x02,0xCA,0xFE,0xDB,0x7E` | Set calibration offset                 |
 | 0x11   | 2      | `0xF1,0xF1,0x11,0x02,0xCA,0xFE,0xDC,0x7E` | Set height limit max                   |
@@ -199,12 +179,16 @@ Some of commands above were found by reverse-engineering the Uplift app (v1.1.0)
 
 ### Known Notifications
 
-| Opcode | Payload Length | Purpose                                                                 | Factory Value (taken from V2-Commercial model) |
-|--------|----------------|-------------------------------------------------------------------------|------------------------------------------------|
-| 0x01   |       3        | Reports the height of the desk in 0.01 mm (10 µm) increments.           |                                                |
-| 0x10   |       2        | Reports the calibration offset in millimeters (2‑byte, big‑endian).     | `572`                                          |
-| 0x04   |       0        | Seen when the desk is in an error state and the display shows **ASR**.  | N/A                                            |
-| 0x11   |       2        | Reports the max height limit in millimeters (2‑byte, big‑endian).       | `671`                                          |
+| Opcode | Payload Length | Purpose                                                                        | Factory Value (taken from V2-Commercial model) |
+|--------|----------------|--------------------------------------------------------------------------------|------------------------------------------------|
+| 0x01   |       3        | Reports the height of the desk in 0.01 mm (10 µm) increments.                  | Unknown                                        |
+| 0x04   |       0        | Seen when the desk is in an error state and the display shows **ASR**.         | N/A                                            |
+| 0x10   |       2        | Reports the calibration offset in millimeters (2‑byte, big‑endian).            | `572`                                          |
+| 0x11   |       2        | Reports the max height limit in millimeters (2‑byte, big‑endian).              | `671`                                          |
+| 0x25   |       2        | Reports height preset 1. Units vary by hardware/firmware. (2‑byte, big‑endian).| Unknown                                        |
+| 0x26   |       2        | Reports height preset 2. Units vary by hardware/firmware. (2‑byte, big‑endian).| Unknown                                        |
+| 0x27   |       2        | Reports height preset 3. Units vary by hardware/firmware. (2‑byte, big‑endian).| Unknown                                        |
+| 0x28   |       2        | Reports height preset 4. Units vary by hardware/firmware. (2‑byte, big‑endian).| Unknown                                        |
 
 Most notification packets seem to have opcodes that match the opcode of an associated command packet.
 For example, sending the command packet with opcode=0x01 triggers a notification packet with the same opcode,
