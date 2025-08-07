@@ -274,6 +274,17 @@ class Desk:
             logger.info(
                 f"- Received packet, opcode=0x{p.opcode:02X}, height limit max: {mm} mm (~{inches} in)"
             )
+        elif p.opcode == 0x12:
+            # Avoid running the command with the 0x12 opcode!
+            # The 0x12 command takes a 2-byte payload, but setting it to various values causes strange and potentially dangerous behavior.
+            # For example, some payloads make the desk movement jerky, other payloads make the desk move quickly.
+            # If you do change this value, anecdotally, a payload of [0x01, 0x00] restores normal behavior.
+            # It also appears to affect the scaling used for the height display.
+            # Until its behavior is better understood, we recommend avoiding it!
+            raw = p.payload.hex()
+            logger.info(
+                f"- Received packet, opcode=0x{p.opcode:02X}, internal configuration value. Support for this packet type is partial and experimental, payload: 0x{raw}"
+            )
         elif p.opcode == 0x25:
             raw = p.payload.hex()
             logger.info(
