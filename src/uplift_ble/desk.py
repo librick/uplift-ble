@@ -177,6 +177,14 @@ class Desk:
         return create_command_packet(opcode=0x02, payload=b"")
 
     @command_writer
+    def move_to_height_preset_1(self) -> bytes:
+        return create_command_packet(opcode=0x05, payload=b"")
+
+    @command_writer
+    def move_to_height_preset_2(self) -> bytes:
+        return create_command_packet(opcode=0x06, payload=b"")
+
+    @command_writer
     def request_height_limits(self) -> bytes:
         return create_command_packet(opcode=0x07, payload=b"")
 
@@ -265,6 +273,26 @@ class Desk:
             inches = convert_mm_to_in(mm)
             logger.info(
                 f"- Received packet, opcode=0x{p.opcode:02X}, height limit max: {mm} mm (~{inches} in)"
+            )
+        elif p.opcode == 0x25:
+            raw = p.payload.hex()
+            logger.info(
+                f"- Received packet, opcode=0x{p.opcode:02X}, height preset 1. Support for this packet type is partial and experimental, payload: 0x{raw}"
+            )
+        elif p.opcode == 0x26:
+            raw = p.payload.hex()
+            logger.info(
+                f"- Received packet, opcode=0x{p.opcode:02X}, height preset 2. Support for this packet type is partial and experimental, payload: 0x{raw}"
+            )
+        elif p.opcode == 0x27:
+            raw = p.payload.hex()
+            logger.info(
+                f"- Received packet, opcode=0x{p.opcode:02X}, height preset 3. Support for this packet type is partial and experimental, payload: 0x{raw}"
+            )
+        elif p.opcode == 0x28:
+            raw = p.payload.hex()
+            logger.info(
+                f"- Received packet, opcode=0x{p.opcode:02X}, height preset 4. Support for this packet type is partial and experimental, payload: 0x{raw}"
             )
         else:
             logger.info(

@@ -204,6 +204,28 @@ def move_down(ctx: typer.Context):
 
 
 @app.command()
+def move_to_height_preset_1(ctx: typer.Context):
+    """
+    Move the desk to height preset 1.
+    """
+    address = _resolve_address(ctx.obj["address"], ctx.obj["timeout"])
+    requires_wake = ctx.obj["requires_wake"]
+    packet = asyncio.run(Desk(address, requires_wake).move_to_height_preset_1())
+    typer.echo(f"Sent {ctx.info_name} packet to {address}: {packet.hex()}")
+
+
+@app.command()
+def move_to_height_preset_2(ctx: typer.Context):
+    """
+    Move the desk to height preset 2.
+    """
+    address = _resolve_address(ctx.obj["address"], ctx.obj["timeout"])
+    requires_wake = ctx.obj["requires_wake"]
+    packet = asyncio.run(Desk(address, requires_wake).move_to_height_preset_2())
+    typer.echo(f"Sent {ctx.info_name} packet to {address}: {packet.hex()}")
+
+
+@app.command()
 def request_height_limits(ctx: typer.Context):
     """
     Request height limits from the desk.
