@@ -19,10 +19,17 @@ from uplift_ble.ble_characteristics import (
     BLE_CHAR_UUID_DIS_SERIAL_NUMBER,
     BLE_CHAR_UUID_DIS_SOFTWARE_REV,
     BLE_CHAR_UUID_DIS_SYSTEM_ID,
+    BLE_CHAR_UUID_GAP_APPEARANCE,
+    BLE_CHAR_UUID_GAP_DEVICE_NAME,
+    BLE_CHAR_UUID_GAP_PERIPHERAL_PREFERRED_CONNECTION_PARAMETERS,
+    BLE_CHAR_UUID_GAP_PERIPHERAL_PRIVACY_FLAG,
     BLE_CHAR_UUID_UPLIFT_DESK_CONTROL,
     BLE_CHAR_UUID_UPLIFT_DESK_OUTPUT,
 )
-from uplift_ble.ble_services import BLE_SERVICE_UUID_DEVICE_INFORMATION_SERVICE
+from uplift_ble.ble_services import (
+    BLE_SERVICE_UUID_DEVICE_INFORMATION_SERVICE,
+    BLE_SERVICE_UUID_GENERIC_ACCESS_SERVICE,
+)
 from uplift_ble.packet import (
     PacketNotification,
     create_command_packet,
@@ -143,7 +150,50 @@ class Desk:
         for p in packets:
             self._process_notification_packet(p)
 
-    async def get_device_information(self) -> Dict[str, Optional[str]]:
+    async def get_ble_gap_values(self) -> Dict[str, Optional[str]]:
+        """
+        Read standard BLE Generic Access Service chars and return them by name.
+        """
+        if not self._connected:
+            await self.connect()
+
+        char_uuids: Dict[str, str] = {
+            "device_name": BLE_CHAR_UUID_GAP_DEVICE_NAME,
+            "appearance": BLE_CHAR_UUID_GAP_APPEARANCE,
+            "peripheral_privacy_flag": BLE_CHAR_UUID_GAP_PERIPHERAL_PRIVACY_FLAG,
+            "peripheral_preferred_connection_parameters": BLE_CHAR_UUID_GAP_PERIPHERAL_PREFERRED_CONNECTION_PARAMETERS,
+        }
+
+        info: Dict[str, Optional[str]] = {}
+
+        try:
+            self._client.services.get_service(BLE_SERVICE_UUID_GENERIC_ACCESS_SERVICE)
+        except Exception:
+            return info
+
+        for name, uuid in char_uuids.items():
+            try:
+                raw = await self._client.read_gatt_char(uuid)
+                if not raw:
+                    info[name] = None
+                elif name == "appearance":
+                    # Appearance is a 16-bit value
+                    info[name] = str(int.from_bytes(raw, byteorder="little"))
+                elif name == "peripheral_privacy_flag":
+                    # Peripheral privacy flag is a single byte (0 or 1)
+                    info[name] = str(raw[0])
+                elif name == "peripheral_preferred_connection_parameters":
+                    # Binary data, return as hex
+                    info[name] = raw.hex()
+                else:
+                    # Device name is UTF-8 string
+                    info[name] = raw.decode("utf-8", errors="ignore").rstrip("\x00")
+            except Exception:
+                info[name] = None
+
+        return info
+
+    async def get_ble_dis_values(self) -> Dict[str, Optional[str]]:
         """
         Read standard BLE Device Information Service chars and return them by name.
         """

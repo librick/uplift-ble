@@ -11,6 +11,11 @@ https://www.bluetooth.com/specifications/assigned-numbers/
 
 from bleak.uuids import normalize_uuid_16
 
+BLE_CHAR_UUID_GAP_DEVICE_NAME = normalize_uuid_16(0x2A00)
+BLE_CHAR_UUID_GAP_APPEARANCE = normalize_uuid_16(0x2A01)
+BLE_CHAR_UUID_GAP_PERIPHERAL_PRIVACY_FLAG = normalize_uuid_16(0x2A02)
+BLE_CHAR_UUID_GAP_PERIPHERAL_PREFERRED_CONNECTION_PARAMETERS = normalize_uuid_16(0x2A04)
+
 BLE_CHAR_UUID_DIS_MANUFACTURER_NAME = normalize_uuid_16(0x2A29)
 BLE_CHAR_UUID_DIS_MODEL_NUMBER = normalize_uuid_16(0x2A24)
 BLE_CHAR_UUID_DIS_SERIAL_NUMBER = normalize_uuid_16(0x2A25)

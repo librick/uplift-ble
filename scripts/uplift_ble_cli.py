@@ -114,7 +114,18 @@ def listen(
 
 
 @app.command()
-def get_device_information(ctx: typer.Context):
+def get_ble_gap_values(ctx: typer.Context):
+    """
+    Get standard BLE generic attribute service (GAP) values.
+    """
+    address = _resolve_address(ctx.obj["address"], ctx.obj["timeout"])
+    requires_wake = ctx.obj["requires_wake"]
+    device_info = asyncio.run(Desk(address, requires_wake).get_ble_gap_values())
+    typer.echo(json.dumps(device_info, indent=4, ensure_ascii=False))
+
+
+@app.command()
+def get_ble_dis_values(ctx: typer.Context):
     """
     Get standard BLE device information service (DIS) values.
 
@@ -125,7 +136,7 @@ def get_device_information(ctx: typer.Context):
     """
     address = _resolve_address(ctx.obj["address"], ctx.obj["timeout"])
     requires_wake = ctx.obj["requires_wake"]
-    device_info = asyncio.run(Desk(address, requires_wake).get_device_information())
+    device_info = asyncio.run(Desk(address, requires_wake).get_ble_dis_values())
     typer.echo(json.dumps(device_info, indent=4, ensure_ascii=False))
 
 
