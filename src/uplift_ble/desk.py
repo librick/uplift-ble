@@ -5,6 +5,7 @@ Handles connecting to an Uplift BLE desk, sending commands, and logging notifica
 """
 import asyncio
 from contextlib import suppress
+from enum import Enum
 import functools
 import logging
 from typing import Any, Callable, Dict, Optional
@@ -43,6 +44,15 @@ from uplift_ble.units import (
 logger = logging.getLogger(__name__)
 
 
+class DeskEvent(Enum):
+    """Enumeration of desk notification events."""
+
+    HEIGHT = "height"
+    RST = "rst"
+    CALIBRATION_HEIGHT = "calibration_height"
+    HEIGHT_LIMIT_MAX = "height_limit_max"
+
+
 def command_writer(func):
     @functools.wraps(func)
     async def wrapper(self, *args, **kwargs):
@@ -77,16 +87,6 @@ def command_writer(func):
 class Desk:
     """
     BLE controller for standing desk.
-
-    Attributes:
-        on_notification_height: Called when a height notification is received.
-            Receives height in millimeters.
-        on_notification_rst: Called when an RST/error notification is received.
-            The desk likely requires a manual reset when this fires.
-        on_notification_calibration_height: Called when a calibration height notification is received.
-            Receives calibration height in millimeters.
-        on_notification_height_limit_max: Called when a height limit max notification is received.
-            Receives height limit max in millimeters.
     """
 
     def __init__(
@@ -123,12 +123,36 @@ class Desk:
         )
         self._connected = False
         self._last_known_height_mm: int | None = None
+        self._listeners = {}
 
-        # Callbacks
-        self.on_notification_height: Optional[Callable[[int], None]] = None
-        self.on_notification_rst: Optional[Callable[[], None]] = None
-        self.on_notification_calibration_height: Optional[Callable[[int], None]] = None
-        self.on_notification_height_limit_max: Optional[Callable[[int], None]] = None
+    def on(self, event: DeskEvent, handler: Callable) -> None:
+        """Register an event handler."""
+        if event not in self._listeners:
+            self._listeners[event] = []
+        self._listeners[event].append(handler)
+
+    def off(self, event: DeskEvent, handler: Callable) -> None:
+        """Remove an event handler."""
+        if event in self._listeners:
+            try:
+                self._listeners[event].remove(handler)
+            except ValueError:
+                pass
+
+    def remove_all_listeners(self, event: Optional[DeskEvent] = None) -> None:
+        """Remove all listeners for a specific event or all events."""
+        if event:
+            self._listeners.pop(event, None)
+        else:
+            self._listeners.clear()
+
+    def _emit(self, event: DeskEvent, *args) -> None:
+        """Emit an event to all registered handlers."""
+        for handler in self._listeners.get(event, []):
+            try:
+                handler(*args)
+            except Exception as e:
+                logger.error(f"Error in event handler for {event}: {e}")
 
     async def connect(self):
         if not self._connected:
@@ -346,34 +370,34 @@ class Desk:
             )
             # Important! Update the class state with this most-recently reported height.
             self._last_known_height_mm = mm
-            # Invoke callback.
-            if self.on_notification_height is not None:
-                self.on_notification_height(mm)
+            # Emit event.
+            self._emit(DeskEvent.HEIGHT, mm)
+
         elif p.opcode == 0x04:
             logger.debug(
                 f"- Received packet, opcode=0x{p.opcode:02X}, desk is reporting an error state (RST) and likely needs to be manually reset"
             )
-            # Invoke callback.
-            if self.on_notification_rst is not None:
-                self.on_notification_rst()
+            # Emit event.
+            self._emit(DeskEvent.RST)
+
         elif p.opcode == 0x10:
             mm = int.from_bytes(p.payload, byteorder="big", signed=False)
             inches = convert_mm_to_in(mm)
             logger.debug(
                 f"- Received packet, opcode=0x{p.opcode:02X}, calibration height: {mm} mm (~{inches} in)"
             )
-            # Invoke callback.
-            if self.on_notification_calibration_height is not None:
-                self.on_notification_calibration_height(mm)
+            # Emit event.
+            self._emit(DeskEvent.CALIBRATION_HEIGHT, mm)
+
         elif p.opcode == 0x11:
             mm = int.from_bytes(p.payload, byteorder="big", signed=False)
             inches = convert_mm_to_in(mm)
             logger.debug(
                 f"- Received packet, opcode=0x{p.opcode:02X}, height limit max: {mm} mm (~{inches} in)"
             )
-            # Invoke callback.
-            if self.on_notification_height_limit_max is not None:
-                self.on_notification_height_limit_max(mm)
+            # Emit event.
+            self._emit(DeskEvent.HEIGHT_LIMIT_MAX, mm)
+
         elif p.opcode == 0x12:
             # Avoid running the command with the 0x12 opcode!
             # The 0x12 command takes a 2-byte payload, but setting it to various values causes strange and potentially dangerous behavior.
