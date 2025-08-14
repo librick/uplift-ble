@@ -136,7 +136,7 @@ These instructions are intended for Linux users but are likely broadly applicabl
     ```
 4. **Install Dependencies**
     ```bash
-    python3 -m pip install -e '.[cli,test]'
+    python3 -m pip install -e '.[cli,dev]'
     ```
 5. **Run Tests (Optional)**
     ```bash

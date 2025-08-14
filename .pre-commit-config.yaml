@@ -1,0 +1,13 @@
+repos:
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.4.1
+    hooks:
+      - id: codespell
+        stages: [pre-commit]
+        additional_dependencies:
+          - tomli # Required to read pyproject.toml config
+      - id: codespell
+        name: codespell-commit
+        stages: [commit-msg]
+        additional_dependencies:
+          - tomli # Required to read pyproject.toml config

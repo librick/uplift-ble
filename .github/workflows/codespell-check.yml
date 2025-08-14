@@ -1,0 +1,22 @@
+# Spell check for code and documentation
+# Uses the official codespell GitHub Action
+# 
+name: Codespell Check
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  check:
+    name: Check for spelling errors
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Run codespell
+        uses: codespell-project/actions-codespell@v2
