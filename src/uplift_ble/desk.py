@@ -60,12 +60,12 @@ def command_writer(func):
 
         # Build and send packet.
         packet: bytes = func(self, *args, **kwargs)
-        logger.info(f"{func.__name__}(): sending {len(packet)} bytes: {packet.hex()}")
+        logger.debug(f"{func.__name__}(): sending {len(packet)} bytes: {packet.hex()}")
         await self._client.write_gatt_char(self.char_uuid_control, packet)
 
         # Allow time for any notifications to arrive.
         if not is_wake_func:
-            logger.info(
+            logger.debug(
                 f"Waiting up to {self._notification_timeout}s for notifications..."
             )
             await asyncio.sleep(self._notification_timeout)
@@ -164,7 +164,7 @@ class Desk:
         """
         logger.debug(f"Received notification from {sender}: {data.hex()}")
         packets = parse_notification_packets(data)
-        logger.info(f"Received {len(packets)} notification packet(s).")
+        logger.debug(f"Received {len(packets)} notification packet(s).")
         for p in packets:
             self._process_notification_packet(p)
 
@@ -341,7 +341,7 @@ class Desk:
             hundredths_of_mm = int.from_bytes(p.payload, byteorder="big", signed=False)
             mm = convert_hundredths_mm_to_whole_mm(hundredths_of_mm)
             inches = convert_mm_to_in(mm)
-            logger.info(
+            logger.debug(
                 f"- Received packet, opcode=0x{p.opcode:02X}, current height: {mm} mm (~{inches} in)"
             )
             # Important! Update the class state with this most-recently reported height.
@@ -350,7 +350,7 @@ class Desk:
             if self.on_notification_height is not None:
                 self.on_notification_height(mm)
         elif p.opcode == 0x04:
-            logger.info(
+            logger.debug(
                 f"- Received packet, opcode=0x{p.opcode:02X}, desk is reporting an error state (RST) and likely needs to be manually reset"
             )
             # Invoke callback.
@@ -359,7 +359,7 @@ class Desk:
         elif p.opcode == 0x10:
             mm = int.from_bytes(p.payload, byteorder="big", signed=False)
             inches = convert_mm_to_in(mm)
-            logger.info(
+            logger.debug(
                 f"- Received packet, opcode=0x{p.opcode:02X}, calibration height: {mm} mm (~{inches} in)"
             )
             # Invoke callback.
@@ -368,7 +368,7 @@ class Desk:
         elif p.opcode == 0x11:
             mm = int.from_bytes(p.payload, byteorder="big", signed=False)
             inches = convert_mm_to_in(mm)
-            logger.info(
+            logger.debug(
                 f"- Received packet, opcode=0x{p.opcode:02X}, height limit max: {mm} mm (~{inches} in)"
             )
             # Invoke callback.
@@ -382,30 +382,30 @@ class Desk:
             # It also appears to affect the scaling used for the height display.
             # Until its behavior is better understood, we recommend avoiding it!
             raw = p.payload.hex()
-            logger.info(
+            logger.debug(
                 f"- Received packet, opcode=0x{p.opcode:02X}, internal configuration value. Support for this packet type is partial and experimental, payload: 0x{raw}"
             )
         elif p.opcode == 0x25:
             raw = p.payload.hex()
-            logger.info(
+            logger.debug(
                 f"- Received packet, opcode=0x{p.opcode:02X}, height preset 1. Support for this packet type is partial and experimental, payload: 0x{raw}"
             )
         elif p.opcode == 0x26:
             raw = p.payload.hex()
-            logger.info(
+            logger.debug(
                 f"- Received packet, opcode=0x{p.opcode:02X}, height preset 2. Support for this packet type is partial and experimental, payload: 0x{raw}"
             )
         elif p.opcode == 0x27:
             raw = p.payload.hex()
-            logger.info(
+            logger.debug(
                 f"- Received packet, opcode=0x{p.opcode:02X}, height preset 3. Support for this packet type is partial and experimental, payload: 0x{raw}"
             )
         elif p.opcode == 0x28:
             raw = p.payload.hex()
-            logger.info(
+            logger.debug(
                 f"- Received packet, opcode=0x{p.opcode:02X}, height preset 4. Support for this packet type is partial and experimental, payload: 0x{raw}"
             )
         else:
-            logger.info(
+            logger.debug(
                 f"- Received packet, opcode=0x{p.opcode:02X}, unknown opcode. Please make a PR if you know what this is."
             )
