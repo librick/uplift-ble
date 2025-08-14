@@ -26,7 +26,7 @@ on:
 
 jobs:
   check:
-    name: Validate commit message format
+    name: Check commit message format
     runs-on: ubuntu-latest
     
     steps:
