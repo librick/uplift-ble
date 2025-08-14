@@ -7,7 +7,7 @@ import asyncio
 from contextlib import suppress
 import functools
 import logging
-from typing import Callable, Dict, Optional
+from typing import Any, Callable, Dict, Optional
 from bleak import BleakClient
 
 from uplift_ble.ble_characteristics import (
@@ -96,14 +96,32 @@ class Desk:
         char_uuid_control: str = BLE_CHAR_UUID_UPLIFT_DESK_CONTROL,
         char_uuid_output: str = BLE_CHAR_UUID_UPLIFT_DESK_OUTPUT,
         notification_timeout: float = 5.0,
+        bleak_options: Optional[Dict[str, Any]] = None,
     ):
+        """
+        Initialize the Desk adapter
+
+        Args:
+            address: The Bluetooth address of the desk adapter
+            requires_wake: **DEPRECATED**
+                Whether the desk requires wake commands before other commands.
+                Deprecated as it should be the caller's responsibility to send wake packets with wake().
+                Implementers are encouraged to set this as `False` for now.
+            char_uuid_control: UUID of the control characteristic
+            char_uuid_output: UUID of the output/notification characteristic
+            notification_timeout: Time to wait for notifications after sending commands
+            bleak_options: Optional dictionary of additional options to pass to BleakClient
+        """
         self.address = address
         self.requires_wake = requires_wake
         self.char_uuid_control = char_uuid_control
         self.char_uuid_output = char_uuid_output
-        self._client = BleakClient(address)
-        self._connected = False
         self._notification_timeout = notification_timeout
+
+        self._client = BleakClient(
+            address_or_ble_device=address, **(bleak_options or {})
+        )
+        self._connected = False
         self._last_known_height_mm: int | None = None
 
         # Callbacks
