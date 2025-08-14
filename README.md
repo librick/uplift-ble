@@ -94,7 +94,7 @@ These instructions are intended for Linux users but are likely broadly applicabl
 2. **Create & Activate Virtual Environment**
     ```bash
     python3 -m venv venv
-    source venv/bin/activate
+    source venv/bin/activate # On Windows: venv\Scripts\activate
     ```
 3. **Verify Virtual Environment**
     ```bash
@@ -102,11 +102,10 @@ These instructions are intended for Linux users but are likely broadly applicabl
     ```
 4. **Install Dependencies**
     ```bash
-    python3 -m pip install .
+    python3 -m pip install -e '.[cli,test]'
     ```
-5. **Install Test Dependencies and Run Tests (Optional)**
+5. **Run Tests (Optional)**
     ```bash
-    python3 -m pip install -e ".[test]"
     python3 -m pytest -v
     ```
 6. **Run the CLI**
