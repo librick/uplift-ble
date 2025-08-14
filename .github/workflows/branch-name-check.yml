@@ -1,4 +1,4 @@
-# Branch name validation inspired by Conventional Commits types
+# Branch name validation
 # Uses commit types from: https://www.conventionalcommits.org/
 #
 # Valid branch name examples:
@@ -22,82 +22,84 @@
 name: Branch Name Check
 
 on:
- pull_request:
-   types: [opened, synchronize, edited]
+  pull_request:
+    types: [opened, synchronize, edited]
 
 jobs:
- branch-name:
-   runs-on: ubuntu-latest
-   steps:
-     - name: Check branch name
-       run: |
-           branch="${{ github.head_ref }}"
+  check:
+    name: Validate branch naming convention
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Check branch name
+        run: |
+          branch="${{ github.head_ref }}"
 
-           # Check branch name length (max 60 characters total)
-           if [[ ${#branch} -gt 60 ]]; then
-               echo "❌ Branch name too long: ${#branch} characters (max 60)"
-               echo ""
-               echo "Current: $branch"
-               echo ""
-               echo "Please use a shorter, more concise description"
-               exit 1
-           fi
+          # Check branch name length (max 60 characters total)
+          if [[ ${#branch} -gt 60 ]]; then
+              echo "❌ Branch name too long: ${#branch} characters (max 60)"
+              echo ""
+              echo "Current: $branch"
+              echo ""
+              echo "Please use a shorter, more concise description"
+              exit 1
+          fi
 
-           # Special pattern for release branches: release/vX.Y.Z (v prefix required)
-           release_pattern="^release\/v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$"
-           
-           # Check if it's a release branch
-           if [[ "$branch" =~ ^release\/ ]]; then
-               if [[ "$branch" =~ $release_pattern ]]; then
-                   echo "✅ Valid release branch: $branch"
-                   exit 0
-               else
-                   echo "❌ Invalid release branch format: $branch"
-                   echo ""
-                   echo "Release branches must follow the pattern: release/vX.Y.Z"
-                   echo ""
-                   echo "Examples:"
-                   echo " - release/v0.3.0"
-                   echo " - release/v1.0.0"
-                   echo " - release/v2.15.4"
-                   echo ""
-                   echo "Note: The 'v' prefix is required for release branches"
-                   exit 1
-               fi
-           fi
+          # Special pattern for release branches: release/vX.Y.Z (v prefix required)
+          release_pattern="^release\/v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$"
+          
+          # Check if it's a release branch
+          if [[ "$branch" =~ ^release\/ ]]; then
+              if [[ "$branch" =~ $release_pattern ]]; then
+                  echo "✅ Valid release branch: $branch"
+                  exit 0
+              else
+                  echo "❌ Invalid release branch format: $branch"
+                  echo ""
+                  echo "Release branches must follow the pattern: release/vX.Y.Z"
+                  echo ""
+                  echo "Examples:"
+                  echo " - release/v0.3.0"
+                  echo " - release/v1.0.0"
+                  echo " - release/v2.15.4"
+                  echo ""
+                  echo "Note: The 'v' prefix is required for release branches"
+                  exit 1
+              fi
+          fi
 
-           # Pattern: <type>/<description>
-           # - type: one of feat, fix, chore
-           # - description: lowercase letters and numbers, with single dashes as separators
-           #    - must start with a letter or number
-           #    - must end with a letter or number
-           #    - no consecutive dashes allowed
-           #    - examples: "add-auth", "fix-bug-123", "update-deps", "2fa-auth"
-           pattern="^(feat|fix|chore)\/[a-z0-9][a-z0-9]*(-[a-z0-9]+)*$"
+          # Pattern: <type>/<description>
+          # - type: one of feat, fix, chore
+          # - description: lowercase letters and numbers, with single dashes as separators
+          #    - must start with a letter or number
+          #    - must end with a letter or number
+          #    - no consecutive dashes allowed
+          #    - examples: "add-auth", "fix-bug-123", "update-deps", "2fa-auth"
+          pattern="^(feat|fix|chore)\/[a-z0-9][a-z0-9]*(-[a-z0-9]+)*$"
 
-           if [[ ! "$branch" =~ $pattern ]]; then
-               echo "❌ Invalid branch name: $branch"
-               echo ""
-               echo "Branch name must follow one of these patterns:"
-               echo ""
-               echo "Feature/Fix/Chore branches: <type>/<description>"
-               echo "Valid types:"
-               echo " - feat  - New feature or enhancement"
-               echo " - fix   - Bug fix"
-               echo " - chore - Maintenance, dependencies, configs, refactoring, etc."
-               echo ""
-               echo "Release branches: release/vX.Y.Z"
-               echo ""
-               echo "Examples:"
-               echo " - feat/add-user-authentication"
-               echo " - feat/2fa-authentication"
-               echo " - fix/login-redirect-issue"
-               echo " - chore/update-dependencies"
-               echo " - release/v0.3.0"
-               echo ""
-               echo "📝 Note for contributors from forks:"
-               echo "Please create a feature branch instead of using 'main'"
-               exit 1
-           fi
+          if [[ ! "$branch" =~ $pattern ]]; then
+              echo "❌ Invalid branch name: $branch"
+              echo ""
+              echo "Branch name must follow one of these patterns:"
+              echo ""
+              echo "Feature/Fix/Chore branches: <type>/<description>"
+              echo "Valid types:"
+              echo " - feat  - New feature or enhancement"
+              echo " - fix   - Bug fix"
+              echo " - chore - Maintenance, dependencies, configs, refactoring, etc."
+              echo ""
+              echo "Release branches: release/vX.Y.Z"
+              echo ""
+              echo "Examples:"
+              echo " - feat/add-user-authentication"
+              echo " - feat/2fa-authentication"
+              echo " - fix/login-redirect-issue"
+              echo " - chore/update-dependencies"
+              echo " - release/v0.3.0"
+              echo ""
+              echo "📝 Note for contributors from forks:"
+              echo "Please create a feature branch instead of using 'main'"
+              exit 1
+          fi
 
-           echo "✅ Valid branch name: $branch"
+          echo "✅ Valid branch name: $branch"

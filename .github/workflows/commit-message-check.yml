@@ -21,125 +21,127 @@
 name: Commit Message Check
 
 on:
- pull_request:
-   types: [opened, synchronize, edited]
+  pull_request:
+    types: [opened, synchronize, edited]
 
 jobs:
- commit-message:
-   runs-on: ubuntu-latest
-   steps:
-     - name: Checkout code
-       uses: actions/checkout@v4
-       with:
-         fetch-depth: 0  # Fetch all history to get all commits in PR
+  check:
+    name: Validate commit message format
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history to get all commits in PR
 
-     - name: Check commit messages
-       run: |
-           # Get base and head SHAs for the PR
-           base_sha="${{ github.event.pull_request.base.sha }}"
-           head_sha="${{ github.event.pull_request.head.sha }}"
-           
-           # Maximum length for commit subject line
-           max_length=72
-           
-           # Pattern: <type>: <message>
-           # - type: feat, fix, or chore
-           # - message: starts with lowercase letter or number
-           # - message: can contain lowercase letters, numbers, spaces, dashes, and commas
-           # - message: must end with letter or number
-           pattern="^(feat|fix|chore): [a-z0-9][a-z0-9 ,-]*[a-z0-9]$"
+      - name: Check commit messages
+        run: |
+          # Get base and head SHAs for the PR
+          base_sha="${{ github.event.pull_request.base.sha }}"
+          head_sha="${{ github.event.pull_request.head.sha }}"
+          
+          # Maximum length for commit subject line
+          max_length=72
+          
+          # Pattern: <type>: <message>
+          # - type: feat, fix, or chore
+          # - message: starts with lowercase letter or number
+          # - message: can contain lowercase letters, numbers, spaces, dashes, and commas
+          # - message: must end with letter or number
+          pattern="^(feat|fix|chore): [a-z0-9][a-z0-9 ,-]*[a-z0-9]$"
 
-           # Pattern for version bumps (v prefix required)
-           version_bump_pattern="^chore: bump version to v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$"
+          # Pattern for version bumps (v prefix required)
+          version_bump_pattern="^chore: bump version to v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$"
 
-           # Merge commit pattern (to skip)
-           merge_pattern="^Merge "
-           
-           echo "Checking commits between $base_sha and $head_sha"
-           echo ""
+          # Merge commit pattern (to skip)
+          merge_pattern="^Merge "
+          
+          echo "Checking commits between $base_sha and $head_sha"
+          echo ""
 
-           has_error=false
-           commit_count=0
-           
-           # Read commits - only check first line (ignore body)
-           while IFS= read -r line; do
-               [[ -z "$line" ]] && continue
-               
-               commit_sha=$(echo "$line" | cut -d' ' -f1)
-               commit_msg=$(echo "$line" | cut -d' ' -f2-)
-               commit_count=$((commit_count + 1))
-               
-               # Skip merge commits
-               if [[ "$commit_msg" =~ $merge_pattern ]]; then
-                   echo "⏭️  Skipping merge commit: $commit_msg"
-                   continue
-               fi
-               
-               # Check length
-               if [[ ${#commit_msg} -gt $max_length ]]; then
-                   echo "❌ Commit message too long: ${#commit_msg} characters (max $max_length)"
-                   echo ""
-                   echo "Commit: $commit_sha"
-                   echo "Message: $commit_msg"
-                   echo ""
-                   echo "Keep the subject line concise. Use the commit body for details."
-                   has_error=true
-                   continue
-               fi
-               
-               # Check for version bump
-               if [[ "$commit_msg" =~ ^chore:\ bump\ version ]]; then
-                   if [[ "$commit_msg" =~ $version_bump_pattern ]]; then
-                       echo "✅ Valid version bump: $commit_msg"
-                   else
-                       echo "❌ Invalid version bump format: $commit_msg"
-                       echo ""
-                       echo "Commit: $commit_sha"
-                       echo ""
-                       echo "Version bumps must use the format: 'chore: bump version to vX.Y.Z'"
-                       echo "where X.Y.Z is a semantic version (major.minor.patch)"
-                       echo "and the 'v' prefix is required"
-                       echo ""
-                       echo "Examples:"
-                       echo " - chore: bump version to v1.0.0"
-                       echo " - chore: bump version to v0.3.0"
-                       has_error=true
-                   fi
-                   continue
-               fi
-               
-               # Check commit format
-               if [[ "$commit_msg" =~ $pattern ]]; then
-                   echo "✅ Valid: $commit_msg"
-               else
-                   echo "❌ Invalid commit message: $commit_msg"
-                   echo ""
-                   echo "Commit: $commit_sha"
-                   echo ""
-                   echo "Commit message must follow the format: <type>: <message>"
-                   echo ""
-                   echo "Valid types:"
-                   echo " - feat  - New feature or enhancement"
-                   echo " - fix   - Bug fix"
-                   echo " - chore - Maintenance, refactoring, etc."
-                   echo ""
-                   echo "Examples:"
-                   echo " - feat: add user authentication"
-                   echo " - fix: resolve memory leak"
-                   echo " - chore: update dependencies"
-                   has_error=true
-               fi
-           done < <(git log --format="%H %s" "$base_sha..$head_sha")
-           
-           echo ""
-           echo "Checked $commit_count commit(s)"
-           
-           if [[ "$has_error" == true ]]; then
-               echo ""
-               echo "❌ Some commit messages don't follow the required format"
-               echo ""
-               echo "Fix with: git rebase -i $base_sha"
-               exit 1
-           fi
-           
-           echo "✅ All commit messages are valid!"
+          has_error=false
+          commit_count=0
+          
+          # Read commits - only check first line (ignore body)
+          while IFS= read -r line; do
+              [[ -z "$line" ]] && continue
+              
+              commit_sha=$(echo "$line" | cut -d' ' -f1)
+              commit_msg=$(echo "$line" | cut -d' ' -f2-)
+              commit_count=$((commit_count + 1))
+              
+              # Skip merge commits
+              if [[ "$commit_msg" =~ $merge_pattern ]]; then
+                  echo "⏭️  Skipping merge commit: $commit_msg"
+                  continue
+              fi
+              
+              # Check length
+              if [[ ${#commit_msg} -gt $max_length ]]; then
+                  echo "❌ Commit message too long: ${#commit_msg} characters (max $max_length)"
+                  echo ""
+                  echo "Commit: $commit_sha"
+                  echo "Message: $commit_msg"
+                  echo ""
+                  echo "Keep the subject line concise. Use the commit body for details."
+                  has_error=true
+                  continue
+              fi
+              
+              # Check for version bump
+              if [[ "$commit_msg" =~ ^chore:\ bump\ version ]]; then
+                  if [[ "$commit_msg" =~ $version_bump_pattern ]]; then
+                      echo "✅ Valid version bump: $commit_msg"
+                  else
+                      echo "❌ Invalid version bump format: $commit_msg"
+                      echo ""
+                      echo "Commit: $commit_sha"
+                      echo ""
+                      echo "Version bumps must use the format: 'chore: bump version to vX.Y.Z'"
+                      echo "where X.Y.Z is a semantic version (major.minor.patch)"
+                      echo "and the 'v' prefix is required"
+                      echo ""
+                      echo "Examples:"
+                      echo " - chore: bump version to v1.0.0"
+                      echo " - chore: bump version to v0.3.0"
+                      has_error=true
+                  fi
+                  continue
+              fi
+              
+              # Check commit format
+              if [[ "$commit_msg" =~ $pattern ]]; then
+                  echo "✅ Valid: $commit_msg"
+              else
+                  echo "❌ Invalid commit message: $commit_msg"
+                  echo ""
+                  echo "Commit: $commit_sha"
+                  echo ""
+                  echo "Commit message must follow the format: <type>: <message>"
+                  echo ""
+                  echo "Valid types:"
+                  echo " - feat  - New feature or enhancement"
+                  echo " - fix   - Bug fix"
+                  echo " - chore - Maintenance, refactoring, etc."
+                  echo ""
+                  echo "Examples:"
+                  echo " - feat: add user authentication"
+                  echo " - fix: resolve memory leak"
+                  echo " - chore: update dependencies"
+                  has_error=true
+              fi
+          done < <(git log --format="%H %s" "$base_sha..$head_sha")
+          
+          echo ""
+          echo "Checked $commit_count commit(s)"
+          
+          if [[ "$has_error" == true ]]; then
+              echo ""
+              echo "❌ Some commit messages don't follow the required format"
+              echo ""
+              echo "Fix with: git rebase -i $base_sha"
+              exit 1
+          fi
+          
+          echo "✅ All commit messages are valid!"

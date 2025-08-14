@@ -34,6 +34,12 @@ Issues   = "https://github.com/librick/uplift-ble/issues"
 cli = [
   "typer>=0.16.0",
 ]
-test = [
+dev = [
+  "codespell>=2.4.1",
+  "pre-commit>=4.3.0", 
   "pytest>=8.4.1",
 ]
+
+[tool.codespell]
+skip = '.git,*.pdf,*.svg,*.pyc,*.pyo,.venv,venv,__pycache__,.pytest_cache,.ruff_cache,dist,build,*.egg-info,.uv'
+ignore-words-list = 'ble'
