@@ -23,6 +23,40 @@ This software controls the movement of large heavy things. Do NOT run this code 
 
 **This software is provided “as‑is” without warranties of any kind, express or implied. The authors and maintainers are not responsible for any damage, injury, or malfunction that may result from using this software to control your desk or any other hardware. By using this tool, you agree to assume all risks and liabilities.**
 
+## Compatibility
+This library was originally written to support a BLE adapter sold by [Uplift Desk](https://www.upliftdesk.com/) for use with their desks. However, Uplift Desk [whitelabels](https://en.wikipedia.org/wiki/White-label_product) (i.e., puts their branding on) hardware and firmware from a company called [Jiecang](https://www.jiecang.com/). Because several other desk companies also whitelabel Jiecang's products, we suspect that this library *could be* compatible with desks from these other companies.
+
+⚠️ **WARNING** ⚠️
+
+This library uses **undocumented**, **vendor-specific commands** that can access hidden desk functions beyond normal user controls, including minimum/maximum height limits, motor speed, and leg synchronization. **This poses real safety risks.**
+
+Additionally, a command that appears to work safely on one brand (e.g., Uplift Desk) may trigger completely different and potentially dangerous behavior on another brand (e.g., Desky), even if both use Jiecang components. The compatibility table below provides rough guidance based on unofficial feedback from developers, but **we DO NOT guarantee safety or functionality for any desk**. Use this library at your own risk. Always test commands cautiously with the desk clear of obstacles and be prepared to manually stop desk movement.
+
+✅ = Verified working  
+⚠️ = Potentially working (proceed with caution)  
+🛑 = Verified not working  
+
+|Functionality|Uplift|Desky|Omnidesk|Vari|Jarvis|DeskHaus|
+|-------------|------|-----|--------|----|------|--------|
+|wake|✅|⚠️|⚠️|⚠️|⚠️|⚠️|
+|move_up|✅|⚠️|⚠️|⚠️|⚠️|⚠️|
+|move_down|✅|⚠️|⚠️|⚠️|⚠️|⚠️|
+|move_to_height_preset_1|✅|⚠️|⚠️|⚠️|⚠️|⚠️|
+|move_to_height_preset_2|✅|⚠️|⚠️|⚠️|⚠️|⚠️|
+|request_height_limits|✅|⚠️|⚠️|⚠️|⚠️|⚠️|
+|set_calibration_offset|✅|⚠️|⚠️|⚠️|⚠️|⚠️|
+|set_height_limit_max|✅|⚠️|⚠️|⚠️|⚠️|⚠️|
+|move_to_specified_height|✅|⚠️|⚠️|⚠️|⚠️|⚠️|
+|set_current_height_as_height_limit_max|✅|⚠️|⚠️|⚠️|⚠️|⚠️|
+|set_current_height_as_height_limit_min|✅|⚠️|⚠️|⚠️|⚠️|⚠️|
+|clear_height_limit_max|✅|⚠️|⚠️|⚠️|⚠️|⚠️|
+|clear_height_limit_min|✅|⚠️|⚠️|⚠️|⚠️|⚠️|
+|stop_movement|✅|⚠️|⚠️|⚠️|⚠️|⚠️|
+|set_units_to_centimeters|✅|⚠️|⚠️|⚠️|⚠️|⚠️|
+|set_units_to_inches|✅|⚠️|⚠️|⚠️|⚠️|⚠️|
+|reset|✅|⚠️|⚠️|⚠️|⚠️|⚠️|
+
+
 ## Usage
 
 The uplift-ble module includes two main classes, `DeskScanner` and `Desk`. Usage example:
