@@ -10,7 +10,6 @@ authors = [
 ]
 dependencies = [
   "bleak>=1.0.1",
-  "typer>=0.16.0",
 ]
 
 description = "Python library for controlling Uplift standing desks over Bluetooth Low Energy via the official Uplift BLE adapter"
@@ -32,6 +31,9 @@ Homepage = "https://github.com/librick/uplift_ble"
 Issues   = "https://github.com/librick/uplift_ble/issues"
 
 [project.optional-dependencies]
+cli = [
+  "typer>=0.16.0",
+]
 test = [
   "pytest>=8.4.1",
 ]

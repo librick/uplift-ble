@@ -6,13 +6,19 @@ CLI to test the uplift_ble module.
 import asyncio
 import json
 import logging
-
-import click
-import typer
 from typing import List, Optional
 
-from param_type_height import HEIGHT
-from param_type_mac_address import MAC_ADDRESS
+try:
+    import typer
+    import click
+    from param_type_height import HEIGHT
+    from param_type_mac_address import MAC_ADDRESS
+except ImportError:
+    raise ImportError(
+        "Typer is required for CLI functionality. "
+        "Install with: pip install 'uplift-ble[cli]'"
+    )
+
 from uplift_ble import units
 from uplift_ble.desk import Desk
 from uplift_ble.scanner import DeskScanner, DiscoveredDesk
