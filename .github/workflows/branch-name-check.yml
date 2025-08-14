@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Check branch name
+      - name: Check branch name format
         run: |
           branch="${{ github.head_ref }}"
 

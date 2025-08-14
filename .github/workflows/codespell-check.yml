@@ -11,7 +11,7 @@ on:
 
 jobs:
   check:
-    name: Check for spelling errors
+    name: Check spelling
     runs-on: ubuntu-latest
     
     steps:
