@@ -27,8 +27,8 @@ license = "MIT"
 license-files = ["LICENSE*"]
 
 [project.urls]
-Homepage = "https://github.com/librick/uplift_ble"
-Issues   = "https://github.com/librick/uplift_ble/issues"
+Homepage = "https://github.com/librick/uplift-ble"
+Issues   = "https://github.com/librick/uplift-ble/issues"
 
 [project.optional-dependencies]
 cli = [
@@ -37,9 +37,3 @@ cli = [
 test = [
   "pytest>=8.4.1",
 ]
-
-[[tool.uv.index]]
-name = "testpypi"
-url = "https://test.pypi.org/simple/"
-publish-url = "https://test.pypi.org/legacy/"
-explicit = true
