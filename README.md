@@ -252,6 +252,36 @@ The Bluetooth adapter allows unauthenticated GATT commands to be sent to it (no 
 
 The author thinks this is a bad idea. A malicious actor could easily write code (or use a library such as this one) to scan for nearby desks, connect to them without any explicit authorization, and either soft-brick them through a series of commands designed to make the desk impossible to move via the app or physical controller (see example below), or move desks when people do not intend for them to be moved.
 
+## Making a New Release
+
+Edit `pyproject.toml` and change version to `X.Y.Z` (where `X.Y.Z` is a semver, no "v" prefix):
+```
+version = "X.Y.Z"
+```
+Then commit the version bump:
+```
+git add pyproject.toml
+git commit -m "chore: bump version to X.Y.Z"
+git push origin main
+```
+Then create and push a tag:
+```bash
+git tag -a vX.Y.Z -m "Release version X.Y.Z"
+git push origin vX.Y.Z
+```
+Then create a GitHub release. Choose the tag "vX.Y.Z".  
+Generate release notes.  
+Click publish.
+
+Publish to PyPI:
+```bash
+uv build
+uv publish
+
+# Clean up
+rm -rf dist/ build/ *.egg-info
+```
+
 ## Contributors
 [![Contributors](https://contrib.rocks/image?repo=librick/uplift-ble)](https://github.com/librick/uplift-ble/graphs/contributors)
 
