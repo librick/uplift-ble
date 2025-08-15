@@ -9,15 +9,15 @@
 #   fix/memory-leak
 #   chore/update-dependencies
 #   chore/refactor-utils
-#   release/v0.3.0
-#   release/v1.0.0
+#   release/0.3.0
+#   release/1.0.0
 #
 # Invalid branch name examples:
 #   feature/add-login        (use 'feat' not 'feature')
 #   feat/Add-User            (no uppercase letters)
 #   fix/login-bug-           (cannot end with dash)
 #   chore/update--deps       (no consecutive dashes)
-#   release/0.3.0            ('v' prefix required for releases)
+#   release/v0.3.0          (no 'v' prefix for releases)
 #
 name: Branch Name Check
 
@@ -45,8 +45,8 @@ jobs:
               exit 1
           fi
 
-          # Special pattern for release branches: release/vX.Y.Z (v prefix required)
-          release_pattern="^release\/v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$"
+          # Special pattern for release branches: release/X.Y.Z (no v prefix)
+          release_pattern="^release\/(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$"
           
           # Check if it's a release branch
           if [[ "$branch" =~ ^release\/ ]]; then
@@ -56,14 +56,14 @@ jobs:
               else
                   echo "❌ Invalid release branch format: $branch"
                   echo ""
-                  echo "Release branches must follow the pattern: release/vX.Y.Z"
+                  echo "Release branches must follow the pattern: release/X.Y.Z"
                   echo ""
                   echo "Examples:"
-                  echo " - release/v0.3.0"
-                  echo " - release/v1.0.0"
-                  echo " - release/v2.15.4"
+                  echo " - release/0.3.0"
+                  echo " - release/1.0.0"
+                  echo " - release/2.15.4"
                   echo ""
-                  echo "Note: The 'v' prefix is required for release branches"
+                  echo "Note: Do NOT include a 'v' prefix in release branch names"
                   exit 1
               fi
           fi
@@ -88,14 +88,14 @@ jobs:
               echo " - fix   - Bug fix"
               echo " - chore - Maintenance, dependencies, configs, refactoring, etc."
               echo ""
-              echo "Release branches: release/vX.Y.Z"
+              echo "Release branches: release/X.Y.Z"
               echo ""
               echo "Examples:"
               echo " - feat/add-user-authentication"
               echo " - feat/2fa-authentication"
               echo " - fix/login-redirect-issue"
               echo " - chore/update-dependencies"
-              echo " - release/v0.3.0"
+              echo " - release/0.3.0"
               echo ""
               echo "📝 Note for contributors from forks:"
               echo "Please create a feature branch instead of using 'main'"
