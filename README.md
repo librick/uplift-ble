@@ -278,7 +278,7 @@ git pull origin main
 
 Then create and push a tag:
 ```bash
-git tag -a vX.Y.Z -m "Release version X.Y.Z"
+git tag -a vX.Y.Z -m "Release vX.Y.Z"
 git push origin vX.Y.Z
 ```
 Then create a GitHub release. Choose the tag "vX.Y.Z".  
@@ -291,7 +291,7 @@ uv build
 uv publish
 
 # Clean up
-rm -rf dist/ build/ *.egg-info
+rm -rf dist/ build/
 ```
 
 ## Contributors
