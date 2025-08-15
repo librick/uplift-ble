@@ -4,7 +4,7 @@ build-backend = "uv_build"
 
 [project]
 name = "uplift-ble"
-version = "0.3.0"
+version = "0.4.0"
 authors = [
   { name = "Eric McDonald", email = "106356608+librick@users.noreply.github.com" },
 ]
@@ -36,7 +36,7 @@ cli = [
 ]
 dev = [
   "codespell>=2.4.1",
-  "pre-commit>=4.3.0", 
+  "pre-commit>=4.3.0",
   "pytest>=8.4.1",
 ]
 
