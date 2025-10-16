@@ -8,22 +8,18 @@ import json
 import logging
 from typing import List, Optional
 
-try:
-    import typer
-    import click
-    from param_type_height import HEIGHT
-    from param_type_mac_address import MAC_ADDRESS
-except ImportError:
-    raise ImportError(
-        "Typer is required for CLI functionality. "
-        "Install with: pip install 'uplift-ble[cli]'"
-    )
+import click
+import typer
 
 from uplift_ble import units
 from uplift_ble.desk import Desk
 from uplift_ble.scanner import DeskScanner, DiscoveredDesk
 
+from .param_type_height import HEIGHT
+from .param_type_mac_address import MAC_ADDRESS
+
 logging.basicConfig(level=logging.INFO)
+
 app = typer.Typer(help="uplift-ble command line tool for controlling with uplift desks")
 
 

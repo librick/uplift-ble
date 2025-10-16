@@ -12,6 +12,8 @@ dependencies = [
   "bleak>=1.0.1",
 ]
 
+scripts = { "uplift-ble" = "uplift_ble.cli:app" }
+
 description = "Python library for controlling Uplift standing desks over Bluetooth Low Energy via the official Uplift BLE adapter"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -32,6 +34,7 @@ Issues   = "https://github.com/librick/uplift-ble/issues"
 
 [project.optional-dependencies]
 cli = [
+  "click>=8.1.7",
   "typer>=0.16.0",
 ]
 dev = [
