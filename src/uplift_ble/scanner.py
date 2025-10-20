@@ -5,8 +5,7 @@ from typing import Optional
 from bleak import BleakScanner
 
 from uplift_ble.ble_services import (
-    BLE_SERVICE_UUID_UPLIFT_DISCOVERY_LIERDA_V1,
-    BLE_SERVICE_UUID_UPLIFT_DISCOVERY_LIERDA_V2,
+    BLE_SERVICE_UUIDS_UPLIFT_DISCOVERY,
 )
 
 
@@ -30,10 +29,6 @@ class DeskScanner:
         """
         Returns a list of discovered devices that look like standing desks.
         """
-        target_services = [
-            BLE_SERVICE_UUID_UPLIFT_DISCOVERY_LIERDA_V1,
-            BLE_SERVICE_UUID_UPLIFT_DISCOVERY_LIERDA_V2,
-        ]
 
         # Use BleakScanner with a detection callback to access advertisement data.
         discovered = {}
@@ -49,7 +44,8 @@ class DeskScanner:
                 )
 
         scanner = BleakScanner(
-            detection_callback=detection_callback, service_uuids=target_services
+            detection_callback=detection_callback,
+            service_uuids=BLE_SERVICE_UUIDS_UPLIFT_DISCOVERY,
         )
 
         await scanner.start()
