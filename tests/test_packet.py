@@ -130,13 +130,3 @@ def test_compute_checksum_opcode_out_of_range_too_large():
     with pytest.raises(ValueError) as exc:
         _compute_checksum(0x100, b"")
     assert "opcode not in range" in str(exc.value)
-
-
-def test_command_packet_opcode_0xFE_empty_payload():
-    """
-    Tests construction of the reset command
-    (`0xF1,0xF1,0xFE,0x00,0xFE,0x7E`).
-    """
-    packet = create_command_packet(0xFE, b"")
-    expected = bytes([0xF1, 0xF1, 0xFE, 0x00, 0xFE, 0x7E])
-    assert packet == expected

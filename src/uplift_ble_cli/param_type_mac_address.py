@@ -1,4 +1,5 @@
 import re
+
 import click
 
 MAC_RE = re.compile(r"^([0-9A-Fa-f]{2}[:-]){5}[0-9A-Fa-f]{2}$")

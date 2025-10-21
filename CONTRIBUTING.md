@@ -3,6 +3,7 @@
 Thank you for your interest in improving **uplift-ble**!
 
 Contributions are welcome, including but not limited to:
+
 - Bug reports
 - Feature requests
 - Writing or editing documentation
@@ -19,14 +20,16 @@ This project follows the [Contributor Covenant Code of Conduct](https://www.cont
 ## Reporting Issues
 
 1. Search for existing issues on [GitHub Issues](https://github.com/librick/uplift-ble/issues).
-2. If none match, open a new issue and include:
 
-   * A clear title and description
-   * Steps to reproduce (with minimal code example if applicable)
-   * Expected vs. actual behavior
-   * Version of `uplift-ble` and Python used
+1. If none match, open a new issue and include:
+
+   - A clear title and description
+   - Steps to reproduce (with minimal code example if applicable)
+   - Expected vs. actual behavior
+   - Version of `uplift-ble` and Python used
 
 ## Development Setup
+
 See README.md for setup instructions.
 
 ## Branch Naming Convention
@@ -41,6 +44,7 @@ We follow a structured branch naming convention. All branch names must:
 ### Examples
 
 ✅ **Valid branch names:**
+
 - `feat/add-bluetooth-retry`
 - `feat/2fa-authentication`
 - `fix/memory-leak`
@@ -48,6 +52,7 @@ We follow a structured branch naming convention. All branch names must:
 - `release/v1.0.0`
 
 ❌ **Invalid branch names:**
+
 - `feature/add-bluetooth` (use `feat` not `feature`)
 - `feat/Add-Bluetooth` (no uppercase)
 - `fix/bug-` (cannot end with dash)
@@ -74,6 +79,7 @@ All commit messages must follow a format loosely based on [Conventional Commits]
 ### Examples
 
 ✅ **Valid commit messages:**
+
 ```
 feat: add bluetooth connection retry
 fix: resolve memory leak in event handler
@@ -82,6 +88,7 @@ chore: bump version to v1.0.0
 ```
 
 ❌ **Invalid commit messages:**
+
 ```
 Add new feature              (missing type prefix)
 feat: added new feature      (use present tense)
@@ -106,28 +113,32 @@ Consider adding tests for any new features or bug fixes.
 ## Pull Request Process
 
 1. Create a **topic branch** following our naming convention:
+
    ```bash
    git checkout -b feat/my-new-feature
    ```
 
-2. Write commits following our format:
+1. Write commits following our format:
+
    ```bash
    git commit -m "feat: add bluetooth retry logic"
    ```
 
-3. Push your branch:
+1. Push your branch:
+
    ```bash
    git push origin feat/my-new-feature
    ```
 
-4. Open a **Pull Request** against `main` on GitHub.
+1. Open a **Pull Request** against `main` on GitHub.
 
-5. Ensure all checks pass:
+1. Ensure all checks pass:
+
    - Branch name validation
    - Commit message validation
    - Tests
    - Any other CI checks
 
-6. Respond to review feedback; maintainers will merge once approved.
+1. Respond to review feedback; maintainers will merge once approved.
 
 Thank you for contributing!

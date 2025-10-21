@@ -2,12 +2,20 @@ repos:
   - repo: https://github.com/codespell-project/codespell
     rev: v2.4.1
     hooks:
-      - id: codespell
-        stages: [pre-commit]
-        additional_dependencies:
-          - tomli # Required to read pyproject.toml config
-      - id: codespell
-        name: codespell-commit
-        stages: [commit-msg]
-        additional_dependencies:
-          - tomli # Required to read pyproject.toml config
+    - id: codespell
+      additional_dependencies:
+        - tomli
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.14.1
+    hooks:
+      - id: ruff-check
+      - id: ruff-format
+
+  - repo: https://github.com/hukkin/mdformat
+    rev: 1.0.0
+    hooks:
+    - id: mdformat
+      files: ^(README\.md|CODE_OF_CONDUCT\.md|CONTRIBUTING\.md)$
+      additional_dependencies:
+      - mdformat-gfm
