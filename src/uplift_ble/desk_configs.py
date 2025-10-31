@@ -38,28 +38,28 @@ class DeskConfig:
 DESK_CONFIGS_BY_SERVICE: dict[str, DeskConfig] = {
     "000000ff-0000-1000-8000-00805f9b34fb": DeskConfig(
         desk_variant=DeskVariant.JIECANG_0x00FF,
-        service_uuid="000000ff-0000-1000-8000-00805f9b34fb",
+        service_uuid=normalize_uuid_16(0x00FF),
         input_char_uuid=normalize_uuid_16(0x01FF),
         output_char_uuid=normalize_uuid_16(0x02FF),
         name_char_uuid=normalize_uuid_16(0x36EF),
     ),
     "0000ff00-0000-1000-8000-00805f9b34fb": DeskConfig(
         desk_variant=DeskVariant.JIECANG_0xFF00,
-        service_uuid="0000ff00-0000-1000-8000-00805f9b34fb",
+        service_uuid=normalize_uuid_16(0xFF00),
         input_char_uuid=normalize_uuid_16(0xFF01),
         output_char_uuid=normalize_uuid_16(0xFF02),
         name_char_uuid=normalize_uuid_16(0xFE63),
     ),
     "0000fe60-0000-1000-8000-00805f9b34fb": DeskConfig(
         desk_variant=DeskVariant.JIECANG_0xFE60,
-        service_uuid="0000fe60-0000-1000-8000-00805f9b34fb",
+        service_uuid=normalize_uuid_16(0xFE60),
         input_char_uuid=normalize_uuid_16(0xFE61),
         output_char_uuid=normalize_uuid_16(0xFE62),
         name_char_uuid=normalize_uuid_16(0xFE63),
     ),
     "0000ff12-0000-1000-8000-00805f9b34fb": DeskConfig(
         desk_variant=DeskVariant.JIECANG_0xFF12,
-        service_uuid="0000ff12-0000-1000-8000-00805f9b34fb",
+        service_uuid=normalize_uuid_16(0xFF12),
         input_char_uuid=normalize_uuid_16(0xFF01),
         output_char_uuid=normalize_uuid_16(0xFF02),
         name_char_uuid=normalize_uuid_16(0xFF06),
