@@ -9,6 +9,7 @@ from bleak.uuids import normalize_uuid_16
 class DeskVariant(Enum):
     """Supported desk variants identified by their service UUID prefix."""
 
+    JIECANG_0x00FF = "jiecang_0x00ff"
     JIECANG_0xFF00 = "jiecang_0xff00"
     JIECANG_0xFE60 = "jiecang_0xfe60"
     JIECANG_0xFF12 = "jiecang_0xff12"
@@ -35,6 +36,13 @@ class DeskConfig:
 
 # Mapping of BLE services to desk properties
 DESK_CONFIGS_BY_SERVICE: dict[str, DeskConfig] = {
+    "000000ff-0000-1000-8000-00805f9b34fb": DeskConfig(
+        desk_variant=DeskVariant.JIECANG_0x00FF,
+        service_uuid="000000ff-0000-1000-8000-00805f9b34fb",
+        input_char_uuid=normalize_uuid_16(0x01FF),
+        output_char_uuid=normalize_uuid_16(0x02FF),
+        name_char_uuid=normalize_uuid_16(0x36EF),
+    ),
     "0000ff00-0000-1000-8000-00805f9b34fb": DeskConfig(
         desk_variant=DeskVariant.JIECANG_0xFF00,
         service_uuid="0000ff00-0000-1000-8000-00805f9b34fb",
