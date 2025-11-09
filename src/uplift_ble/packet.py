@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import List
 
 
 @dataclass
@@ -41,7 +40,7 @@ def create_command_packet(opcode: int, payload: bytes) -> bytes:
     return bytes([0xF1, 0xF1, opcode, payload_len, *payload, checksum, 0x7E])
 
 
-def parse_notification_packets(data: bytes) -> List[PacketNotification]:
+def parse_notification_packets(data: bytes) -> list[PacketNotification]:
     """
     Scan data, which can contain multiple packets, for back-to-back notification packets,
     parsing and returning all valid packets.
@@ -49,7 +48,7 @@ def parse_notification_packets(data: bytes) -> List[PacketNotification]:
     Notification packets are very similar to command packets, except that they
     use the header byte sequence 0xF2F2 instead of 0xF1F1.
     """
-    packets: List[PacketNotification] = []
+    packets: list[PacketNotification] = []
     i = 0
     length = len(data)
     while i + 6 <= length:

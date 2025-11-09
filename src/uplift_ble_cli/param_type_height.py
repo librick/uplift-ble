@@ -1,7 +1,8 @@
 import re
+
 import click
 
-from uplift_ble.units import convert_cm_to_mm, convert_in_to_mm, round_half_up
+from uplift_ble.utils import convert_cm_to_mm, convert_in_to_mm, round_half_up
 
 UNIT_RE = re.compile(r"^(\d+(?:\.\d+)?)(mm|cm|in)$", re.IGNORECASE)
 

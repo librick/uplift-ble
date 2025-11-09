@@ -4,7 +4,7 @@ build-backend = "uv_build"
 
 [project]
 name = "uplift-ble"
-version = "0.4.0"
+version = "0.5.0"
 authors = [
   { name = "Eric McDonald", email = "106356608+librick@users.noreply.github.com" },
 ]
@@ -30,16 +30,32 @@ license-files = ["LICENSE*"]
 Homepage = "https://github.com/librick/uplift-ble"
 Issues   = "https://github.com/librick/uplift-ble/issues"
 
-[project.optional-dependencies]
+[project.scripts]
+uplift-ble-cli = "uplift_ble_cli.cli:main"
+
+[dependency-groups]
 cli = [
-  "typer>=0.16.0",
+    "click>=8.3.0",
 ]
 dev = [
-  "codespell>=2.4.1",
-  "pre-commit>=4.3.0",
-  "pytest>=8.4.1",
+    { include-group = "cli" },
+    "pytest>=8.4.1",
+    "pytest-asyncio>=1.2.0",
+    "pre-commit>=4.3.0",
+    "ruff>=0.14.1",
+    "codespell>=2.4.1",
+    "mdformat>=1.0.0",
+    "mdformat-gfm>=1.0.0",
 ]
 
 [tool.codespell]
 skip = '.git,*.pdf,*.svg,*.pyc,*.pyo,.venv,venv,__pycache__,.pytest_cache,.ruff_cache,dist,build,*.egg-info,.uv'
 ignore-words-list = 'ble'
+
+[tool.ruff.lint]
+extend-select = [
+    "UP",
+    "FA",
+    "I",
+]
+
