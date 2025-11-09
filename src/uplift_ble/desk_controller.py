@@ -57,7 +57,7 @@ def command_writer(skip_wake=False):
             )
 
             logger.debug(
-                f"{func.__name__}(): sending {len(packet)} bytes: {packet.hex()}"
+                f"{func.__name__}: sending {len(packet)} bytes: {packet.hex()}"
             )
             await self.client.write_gatt_char(
                 self.input_char_uuid, packet, response=False
