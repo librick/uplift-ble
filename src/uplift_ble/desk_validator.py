@@ -136,7 +136,7 @@ class DeskValidator:
 def _create_default_client(
     device: BLEDeviceProtocol, timeout: float
 ) -> BLEClientProtocol:
-    return BleakClient(address_or_ble_device=device, timeout=timeout)
+    return BleakClient(address_or_ble_device=device.address, timeout=timeout)
 
 
 def _service_has_required_characteristics(
