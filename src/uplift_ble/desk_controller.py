@@ -53,7 +53,9 @@ def command_writer(skip_wake=False):
 
             # Convert command to packet bytes
             packet = create_command_packet(
-                opcode=command.opcode, payload=command.payload
+                opcode=command.opcode,
+                payload=command.payload,
+                sync_bytes=self._command_sync_bytes,
             )
 
             logger.debug(
@@ -91,12 +93,18 @@ class DeskController:
         output_char_uuid: str,
         requires_wake: bool,
         notification_timeout: float = 1.0,
+        command_sync_bytes: bytes = b"\xf1\xf1",
+        notification_sync_bytes: bytes = b"\xf2\xf2",
+        height_scale_factor: float = 0.1,
     ):
         self.client = client
         self.input_char_uuid = input_char_uuid
         self.output_char_uuid = output_char_uuid
         self.requires_wake = requires_wake
         self._notification_timeout = notification_timeout
+        self._command_sync_bytes = command_sync_bytes
+        self._notification_sync_bytes = notification_sync_bytes
+        self._height_scale_factor = height_scale_factor
         self._notification_queue: asyncio.Queue[bytes] = asyncio.Queue()
         self._processor_task = None
         self._listeners = {}
@@ -217,7 +225,7 @@ class DeskController:
                     break
 
                 try:
-                    packets = parse_notification_packets(data)
+                    packets = parse_notification_packets(data, self._notification_sync_bytes)
                     for packet in packets:
                         self._process_notification_packet(packet)
                 except Exception as e:
@@ -273,18 +281,29 @@ class DeskController:
         Handle notification with opcode 0x01 (current height).
 
         The payload contains the current desk height as a 3-byte value:
-        - Byte 0: Status/flag byte (anecdotally, always 0x00)
-        - Bytes 1-2: Height as 16-bit big-endian integer in tenths of millimeters
 
-        Height values are always in tenths of millimeters regardless of unit settings.
+        For Uplift (Jiecang):
+        - Byte 0: Status/flag byte (anecdotally, always 0x00)
+        - Bytes 1-2: Height as 16-bit big-endian integer in tenths of mm
+
+        For Omnidesk:
+        - Bytes 0-1: Height as 16-bit big-endian integer in tenths of cm
+        - Byte 2: Status/flag byte
         """
         expected_len = 3
         if len(payload) != expected_len:
             self._log_payload_length_warning(0x01, payload, expected_len)
             return
-        # Skip status byte at position 0, extract height from bytes 1-2
-        height_tenths_of_mm = bytes_to_uint16_be(payload[1:3])
-        self._height_mm = convert_tenths_mm_to_mm(height_tenths_of_mm)
+
+        # Omnidesk: height is in bytes 0-1 (tenths of cm)
+        # Uplift: height is in bytes 1-2 (tenths of mm)
+        if self._height_scale_factor == 1.0:  # Omnidesk
+            height_raw = bytes_to_uint16_be(payload[0:2])
+        else:  # Uplift
+            height_raw = bytes_to_uint16_be(payload[1:3])
+
+        # Apply desk-specific scale factor
+        self._height_mm = height_raw * self._height_scale_factor
         self._emit(DeskEventType.HEIGHT, self._height_mm)
 
     def _process_notification_0x02(self, payload: bytes) -> None:
