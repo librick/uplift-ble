@@ -22,4 +22,7 @@ class DiscoveredDesk:
             output_char_uuid=self.desk_config.output_char_uuid,
             requires_wake=self.desk_config.requires_wake,
             notification_timeout=notification_timeout,
+            command_sync_bytes=self.desk_config.command_sync_bytes,
+            notification_sync_bytes=self.desk_config.notification_sync_bytes,
+            height_scale_factor=self.desk_config.height_scale_factor,
         )

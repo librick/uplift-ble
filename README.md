@@ -1,6 +1,6 @@
 # uplift-ble
 
-Unofficial Python library for controlling Uplift standing desks over Bluetooth Low Energy via the [Uplift BLE adapter](https://www.upliftdesk.com/bluetooth-adapter-for-uplift-desk/).
+Unofficial Python library for controlling Uplift and Omnidesk standing desks over Bluetooth Low Energy.
 
 ![Made with Python](https://img.shields.io/badge/Made%20with-Python-3776AB.svg)
 ![PyPI - Version](https://img.shields.io/pypi/v/uplift-ble)
@@ -16,7 +16,7 @@ Benefits:
 - Modern logging via Python's built-in logging module
 - Minimal dependencies
 
-*This library is unofficial and is NOT affiliated with the company that makes UPLIFT desks.*
+*This library is unofficial and is NOT affiliated with UPLIFT Desk or Omnidesk.*
 
 ⚠️ **WARNING** ⚠️
 
@@ -40,25 +40,27 @@ The compatibility table below provides rough guidance based on unofficial feedba
 ⚠️ = Potentially working (proceed with caution)\
 🛑 = Verified not working
 
-| Functionality                          | Uplift (0x00FF) | Uplift (0xFE60) | Uplift (0xFF00) | Uplift (0xFF12) | Desky | Omnidesk | Vari | Jarvis | DeskHaus |
-| -------------------------------------- | --------------- | --------------- | --------------- | --------------- | ----- | -------- | ---- | ------ | -------- |
-| wake                                   | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
-| move_up                                | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
-| move_down                              | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
-| move_to_height_preset_1                | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
-| move_to_height_preset_2                | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
-| request_height_limits                  | ⚠️              | ⚠️              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
-| set_calibration_offset                 | ⚠️              | ⚠️              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
-| set_height_limit_max                   | ⚠️              | ⚠️              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
-| move_to_specified_height               | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
-| set_current_height_as_height_limit_max | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
-| set_current_height_as_height_limit_min | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
-| clear_height_limit_max                 | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
-| clear_height_limit_min                 | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
-| stop_movement                          | ⚠️              | ⚠️              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
-| set_units_to_centimeters               | ⚠️              | ❌              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
-| set_units_to_inches                    | ⚠️              | ❌              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
-| reset                                  | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
+| Functionality                          | Uplift (0x00FF) | Uplift (0xFE60) | Uplift (0xFF00) | Uplift (0xFF12) | Omnidesk Ascent (0xFE60) | Desky | Vari | Jarvis | DeskHaus |
+| -------------------------------------- | --------------- | --------------- | --------------- | --------------- | ------------------------ | ----- | ---- | ------ | -------- |
+| wake                                   | ⚠️              | ✅              | ⚠️              | ⚠️              | ✅                       | ⚠️    | ⚠️   | ⚠️     | ⚠️       |
+| move_up                                | ⚠️              | ✅              | ⚠️              | ⚠️              | ✅                       | ⚠️    | ⚠️   | ⚠️     | ⚠️       |
+| move_down                              | ⚠️              | ✅              | ⚠️              | ⚠️              | ✅                       | ⚠️    | ⚠️   | ⚠️     | ⚠️       |
+| move_to_height_preset_1                | ⚠️              | ✅              | ⚠️              | ⚠️              | ✅                       | ⚠️    | ⚠️   | ⚠️     | ⚠️       |
+| move_to_height_preset_2                | ⚠️              | ✅              | ⚠️              | ⚠️              | ✅                       | ⚠️    | ⚠️   | ⚠️     | ⚠️       |
+| move_to_height_preset_3                | ⚠️              | ⚠️              | ⚠️              | ⚠️              | ✅                       | ⚠️    | ⚠️   | ⚠️     | ⚠️       |
+| move_to_height_preset_4                | ⚠️              | ⚠️              | ⚠️              | ⚠️              | ✅                       | ⚠️    | ⚠️   | ⚠️     | ⚠️       |
+| request_height_limits                  | ⚠️              | ⚠️              | ⚠️              | ⚠️              | ⚠️                       | ⚠️    | ⚠️   | ⚠️     | ⚠️       |
+| set_calibration_offset                 | ⚠️              | ⚠️              | ⚠️              | ⚠️              | ⚠️                       | ⚠️    | ⚠️   | ⚠️     | ⚠️       |
+| set_height_limit_max                   | ⚠️              | ⚠️              | ⚠️              | ⚠️              | ⚠️                       | ⚠️    | ⚠️   | ⚠️     | ⚠️       |
+| move_to_specified_height               | ⚠️              | ✅              | ⚠️              | ⚠️              | ✅                       | ⚠️    | ⚠️   | ⚠️     | ⚠️       |
+| set_current_height_as_height_limit_max | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️                       | ⚠️    | ⚠️   | ⚠️     | ⚠️       |
+| set_current_height_as_height_limit_min | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️                       | ⚠️    | ⚠️   | ⚠️     | ⚠️       |
+| clear_height_limit_max                 | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️                       | ⚠️    | ⚠️   | ⚠️     | ⚠️       |
+| clear_height_limit_min                 | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️                       | ⚠️    | ⚠️   | ⚠️     | ⚠️       |
+| stop_movement                          | ⚠️              | ⚠️              | ⚠️              | ⚠️              | ✅                       | ⚠️    | ⚠️   | ⚠️     | ⚠️       |
+| set_units_to_centimeters               | ⚠️              | ❌              | ⚠️              | ⚠️              | ✅                       | ⚠️    | ⚠️   | ⚠️     | ⚠️       |
+| set_units_to_inches                    | ⚠️              | ❌              | ⚠️              | ⚠️              | ✅                       | ⚠️    | ⚠️   | ⚠️     | ⚠️       |
+| reset                                  | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️                       | ⚠️    | ⚠️   | ⚠️     | ⚠️       |
 
 ## Running the CLI
 
@@ -73,17 +75,31 @@ uv run uplift-ble-cli
 Valid desk commands were discovered by some combination of the following techniques:
 
 - Reverse-engineered from the source code of the [Uplift Desk App](https://play.google.com/store/apps/details?id=app.android.uplifts&hl=en_US) on Google Play
+- Reverse-engineered from the Omnidesk Android APK to identify protocol differences
 - Discovered by brute-force search of vendor-specific opcodes against an actual desk
 - Referenced from existing work from Bennet Wendorf's [uplift-desk-controller](https://github.com/Bennett-Wendorf/uplift-desk-controller) repo
 
+See [OMNIDESK_FINDINGS.md](OMNIDESK_FINDINGS.md) for detailed documentation on Omnidesk protocol differences.
+
 ## Protocol
 
-The [Uplift Desk Bluetooth adapter](https://www.upliftdesk.com/bluetooth-adapter-for-uplift-desk/) uses a proprietary byte-oriented protocol over the Bluetooth Low Energy (BLE) Generic Attribute Profile (GATT). There are two vendor-defined characteristics: one for sending commands to the Bluetooth adapter (`0xFE61`) and one on which notifications are raised such that clients can receive information from the Bluetooth adapter (`0xFE62`).
+The Uplift and Omnidesk Bluetooth adapters use a proprietary byte-oriented protocol over the Bluetooth Low Energy (BLE) Generic Attribute Profile (GATT). There are two vendor-defined characteristics: one for sending commands to the Bluetooth adapter (`0xFE61`) and one on which notifications are raised such that clients can receive information from the Bluetooth adapter (`0xFE62`).
 
 | GATT Characteristic | Purpose                                                             |
 | ------------------- | ------------------------------------------------------------------- |
 | 0xFE61              | Desk control. Clients write to this to send commands to the server. |
 | 0xFE62              | Desk output. The server sends notifications on this for clients.    |
+
+### Omnidesk Protocol Differences
+
+**Omnidesk desks use a modified protocol with inverted sync bytes:**
+
+- **Command packets**: Use `0xF2F2` sync bytes (Uplift uses `0xF1F1`)
+- **Notification packets**: Use `0xF1F1` sync bytes (Uplift uses `0xF2F2`)
+- **Height units**: Reported in tenths of centimeters (Uplift uses tenths of millimeters)
+- **Height byte order**: Height bytes are at payload positions 0-1 (Uplift uses positions 1-2)
+
+The library automatically detects and handles these differences based on the advertised BLE service UUID.
 
 ### Attribute Value Format
 
@@ -273,4 +289,4 @@ This project builds on the prior work of Bennett Wendorf's [uplift-desk-controll
 
 ## Legal
 
-This project is an **unofficial project** and is **NOT** endorsed by nor affiliated with the company that makes UPLIFT desks. We make no claims to the trademarks or intellectual property of the UPLIFT company. All code in this repo is written independently of UPLIFT and is MIT licensed. Any vendor-specific information used in this code is discovered through reverse-engineering publicly available information.
+This project is an **unofficial project** and is **NOT** endorsed by nor affiliated with UPLIFT Desk, Omnidesk, or any other standing desk manufacturer. We make no claims to the trademarks or intellectual property of these companies. All code in this repo is written independently and is MIT licensed. Any vendor-specific information used in this code is discovered through reverse-engineering publicly available information (Android APKs, BLE traffic analysis).
