@@ -221,6 +221,14 @@ async def request_height_limits(controller: DeskController):
 
 
 @cli.command()
+@with_desk_controller
+async def request_units(controller: DeskController):
+    """Request the desk's current units."""
+    await controller.request_units()
+    click.echo("Sent command to request desk's current units", err=True)
+
+
+@cli.command()
 @click.argument("calibration_offset", type=click.IntRange(0, 0xFFFF))
 @with_desk_controller
 async def set_calibration_offset(controller: DeskController, calibration_offset: int):

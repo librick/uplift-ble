@@ -48,6 +48,7 @@ The compatibility table below provides rough guidance based on unofficial feedba
 | move_to_height_preset_1                | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
 | move_to_height_preset_2                | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
 | request_height_limits                  | ⚠️              | ⚠️              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
+| request_units                          | ⚠️              | ❌              | ✅              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
 | set_calibration_offset                 | ⚠️              | ⚠️              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
 | set_height_limit_max                   | ⚠️              | ⚠️              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
 | move_to_specified_height               | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
@@ -124,6 +125,7 @@ All attribute values sent to `0xFE61` (commands) and received from `0xFE62` (not
 | 0x05   | 0      | `0xF1,0xF1,0x05,0x00,0x05,0x7E`           | Move to height preset 1                                                |
 | 0x06   | 0      | `0xF1,0xF1,0x06,0x00,0x06,0x7E`           | Move to height preset 2                                                |
 | 0x07   | 0      | `0xF1,0xF1,0x07,0x00,0x07,0x7E`           | Request height limits                                                  |
+| 0x0E   | 0      | `0xF1,0xF1,0x0E,0x00,0x0E,0x7E`           | Request units                                                          |
 | 0x10   | 2      | `0xF1,0xF1,0x10,0x02,0xCA,0xFE,0xDB,0x7E` | Set calibration offset                                                 |
 | 0x11   | 2      | `0xF1,0xF1,0x11,0x02,0xCA,0xFE,0xDC,0x7E` | Set height limit max                                                   |
 | 0x12   | 2      | `0xF1,0xF1,0x12,0x02,0x01,0x00,0x15,0x7E` | Not fully known; potentially dangerous. Sets some configuration value. |
@@ -144,24 +146,24 @@ Some of commands above were found by reverse-engineering the Uplift app (v1.1.0)
 
 ### Known Notifications
 
-| Opcode | Payload Length | Purpose                                                                                                          | Factory Value (taken from V2-Commercial model) |
-| ------ | -------------- | ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| Opcode | Payload Length | Purpose                                                                                                                                            | Factory Value (taken from V2-Commercial model) |
+| ------ | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
 | 0x01   | 3              | Reports the desk height in tenths of the configured display unit (inches or cm per 0x0E setting). Bytes 0-1: height (big-endian), Byte 2: unknown. | Unknown                                        |
-| 0x02   | 1              | Reports desk error conditions via single-byte error codes.                                                       | N/A                                            |
-| 0x04   | 0              | Seen when the desk is in an error state and the display shows **RST**.                                           | N/A                                            |
-| 0x07   | 4              | Reports height limit configuration. Bytes 0-1: max height (mm), Bytes 2-3: min height (mm).                      | Unknown                                        |
-| 0x0E   | 1              | Reports display unit preference. 0x00: centimeters, 0x01: inches.                                                | Unknown                                        |
-| 0x10   | 2              | Reports the calibration offset in millimeters (2‑byte, big‑endian).                                              | `572`                                          |
-| 0x11   | 2              | Reports the max height limit in millimeters (2‑byte, big‑endian).                                                | `671`                                          |
-| 0x12   | 2              | Reports some configuration value. The corresponding command is potentially dangerous.                            | Unknown                                        |
-| 0x19   | 1              | Reports touch mode. 0x00: one-touch mode, 0x01: constant-touch mode.                                             | Unknown                                        |
-| 0x1F   | 1              | Reports lock status. 0x00: unlocked, 0x01: locked.                                                               | Unknown                                        |
-| 0x21   | 2              | Reports maximum height limit in millimeters (real-time update, 2‑byte, big‑endian).                              | Unknown                                        |
-| 0x22   | 2              | Reports minimum height limit in millimeters (real-time update, 2‑byte, big‑endian).                              | Unknown                                        |
-| 0x25   | 2              | Reports height preset 1. Units vary by hardware/firmware. (2‑byte, big‑endian).                                  | Unknown                                        |
-| 0x26   | 2              | Reports height preset 2. Units vary by hardware/firmware. (2‑byte, big‑endian).                                  | Unknown                                        |
-| 0x27   | 2              | Reports height preset 3. Units vary by hardware/firmware. (2‑byte, big‑endian).                                  | Unknown                                        |
-| 0x28   | 2              | Reports height preset 4. Units vary by hardware/firmware. (2‑byte, big‑endian).                                  | Unknown                                        |
+| 0x02   | 1              | Reports desk error conditions via single-byte error codes.                                                                                         | N/A                                            |
+| 0x04   | 0              | Seen when the desk is in an error state and the display shows **RST**.                                                                             | N/A                                            |
+| 0x07   | 4              | Reports height limit configuration. Bytes 0-1: max height (mm), Bytes 2-3: min height (mm).                                                        | Unknown                                        |
+| 0x0E   | 1              | Reports display unit preference. 0x00: centimeters, 0x01: inches.                                                                                  | Unknown                                        |
+| 0x10   | 2              | Reports the calibration offset in millimeters (2‑byte, big‑endian).                                                                                | `572`                                          |
+| 0x11   | 2              | Reports the max height limit in millimeters (2‑byte, big‑endian).                                                                                  | `671`                                          |
+| 0x12   | 2              | Reports some configuration value. The corresponding command is potentially dangerous.                                                              | Unknown                                        |
+| 0x19   | 1              | Reports touch mode. 0x00: one-touch mode, 0x01: constant-touch mode.                                                                               | Unknown                                        |
+| 0x1F   | 1              | Reports lock status. 0x00: unlocked, 0x01: locked.                                                                                                 | Unknown                                        |
+| 0x21   | 2              | Reports maximum height limit in millimeters (real-time update, 2‑byte, big‑endian).                                                                | Unknown                                        |
+| 0x22   | 2              | Reports minimum height limit in millimeters (real-time update, 2‑byte, big‑endian).                                                                | Unknown                                        |
+| 0x25   | 2              | Reports height preset 1. Units vary by hardware/firmware. (2‑byte, big‑endian).                                                                    | Unknown                                        |
+| 0x26   | 2              | Reports height preset 2. Units vary by hardware/firmware. (2‑byte, big‑endian).                                                                    | Unknown                                        |
+| 0x27   | 2              | Reports height preset 3. Units vary by hardware/firmware. (2‑byte, big‑endian).                                                                    | Unknown                                        |
+| 0x28   | 2              | Reports height preset 4. Units vary by hardware/firmware. (2‑byte, big‑endian).                                                                    | Unknown                                        |
 
 There may exist notification packets whose opcodes and payload structures are unknown. PRs are welcome!
 
