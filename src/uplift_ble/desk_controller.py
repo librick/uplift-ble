@@ -27,7 +27,7 @@ from uplift_ble.packet import (
     create_command_packet,
     parse_notification_packets,
 )
-from uplift_ble.utils import bytes_to_uint16_be, convert_tenths_mm_to_mm
+from uplift_ble.utils import bytes_to_uint16_be, convert_cm_to_mm, convert_in_to_mm
 
 logger = logging.getLogger(__name__)
 
@@ -103,7 +103,8 @@ class DeskController:
         self._notify_started = False
 
         # Read-only state, populated by notifications received from the device
-        self._height_mm: float | None = None
+        self._height_raw: int | None = None
+        self._height_raw_unit: DeskUnit | None = None
         self._unit: DeskUnit | None = None
         self._touch_mode: DeskTouchMode | None = None
         self._lock_status: DeskLockStatus | None = None
@@ -125,8 +126,27 @@ class DeskController:
 
     @property
     def height_mm(self) -> float | None:
-        """Current desk height in millimeters (read-only)."""
-        return self._height_mm
+        """Current desk height in millimeters, converted from display units (read-only).
+
+        Returns None if height or display unit has not been received yet.
+        """
+        if self._height_raw is None or self._height_raw_unit is None:
+            return None
+        tenths = self._height_raw
+        if self._height_raw_unit == DeskUnit.INCHES:
+            return convert_in_to_mm(tenths / 10.0)
+        return convert_cm_to_mm(tenths / 10.0)
+
+    @property
+    def height_raw(self) -> int | None:
+        """Current desk height as a raw integer in tenths of display units (read-only).
+
+        The value is tenths of inches or tenths of centimeters depending on the
+        desk's display unit at the time the height was captured. This may differ
+        from the current ``unit`` if the display unit was changed after the last
+        height notification.
+        """
+        return self._height_raw
 
     @property
     def unit(self) -> DeskUnit | None:
@@ -269,23 +289,25 @@ class DeskController:
                 logger.error(f"Error in event handler for {event_type}: {e}")
 
     def _process_notification_0x01(self, payload: bytes) -> None:
-        """
-        Handle notification with opcode 0x01 (current height).
+        """Handle notification with opcode 0x01 (current height).
 
         The payload contains the current desk height as a 3-byte value:
-        - Byte 0: Status/flag byte (anecdotally, always 0x00)
-        - Bytes 1-2: Height as 16-bit big-endian integer in tenths of millimeters
+        - Bytes 0-1: Height as 16-bit big-endian integer in tenths of display units
+        - Byte 2: Unknown (varies across firmware versions)
 
-        Height values are always in tenths of millimeters regardless of unit settings.
+        The height value is in tenths of the desk's configured display unit:
+        tenths of inches when set to inches, tenths of centimeters when set to
+        centimeters.  The display unit can be queried with ``request_units``.
         """
         expected_len = 3
         if len(payload) != expected_len:
             self._log_payload_length_warning(0x01, payload, expected_len)
             return
-        # Skip status byte at position 0, extract height from bytes 1-2
-        height_tenths_of_mm = bytes_to_uint16_be(payload[1:3])
-        self._height_mm = convert_tenths_mm_to_mm(height_tenths_of_mm)
-        self._emit(DeskEventType.HEIGHT, self._height_mm)
+        self._height_raw = bytes_to_uint16_be(payload[0:2])
+        self._height_raw_unit = self._unit
+        height_mm = self.height_mm
+        if height_mm is not None:
+            self._emit(DeskEventType.HEIGHT, height_mm)
 
     def _process_notification_0x02(self, payload: bytes) -> None:
         """
@@ -346,17 +368,15 @@ class DeskController:
         )
 
     def _process_notification_0x0E(self, payload: bytes) -> None:
-        """
-        Handle notification with opcode 0x0E (display unit preference).
+        """Handle notification with opcode 0x0E (display unit preference).
 
         The payload contains a 1-byte value indicating the unit system for display:
         - 0x00: Centimeters
         - 0x01: Inches
 
-        This setting primarily affects how the desk's attached display (if any) shows heights
-        and what unit preference the app should use. The desk firmware always reports
-        actual height values in fixed units (tenths of mm for current height, mm for limits)
-        regardless of this setting.
+        The desk reports height values (opcode 0x01) in tenths of the configured
+        display unit, so this setting is required to correctly interpret heights.
+        Send opcode 0x0E with an empty payload to query the current setting.
         """
         expected_len = 1
         if len(payload) != expected_len:
@@ -368,6 +388,11 @@ class DeskController:
             return
         self._unit = unit
         self._emit(DeskEventType.UNIT, self._unit)
+        if self._height_raw is not None and self._height_raw_unit is None:
+            self._height_raw_unit = unit
+            height_mm = self.height_mm
+            if height_mm is not None:
+                self._emit(DeskEventType.HEIGHT, height_mm)
 
     def _process_notification_0x19(self, payload: bytes) -> None:
         """
@@ -550,11 +575,23 @@ class DeskController:
 
     @command_writer()
     def move_to_height_preset_1(self) -> DeskCommand:
+        """Recall height preset 1 (move the desk to the stored position)."""
         return DeskCommand(opcode=0x05, payload=b"")
 
     @command_writer()
     def move_to_height_preset_2(self) -> DeskCommand:
+        """Recall height preset 2 (move the desk to the stored position)."""
         return DeskCommand(opcode=0x06, payload=b"")
+
+    @command_writer()
+    def save_height_preset_1(self) -> DeskCommand:
+        """Save the current desk height as height preset 1."""
+        return DeskCommand(opcode=0x03, payload=b"")
+
+    @command_writer()
+    def save_height_preset_2(self) -> DeskCommand:
+        """Save the current desk height as height preset 2."""
+        return DeskCommand(opcode=0x04, payload=b"")
 
     @command_writer()
     def request_height_limits(self) -> DeskCommand:
@@ -608,6 +645,14 @@ class DeskController:
     @command_writer()
     def stop_movement(self) -> DeskCommand:
         return DeskCommand(opcode=0x2B, payload=b"")
+
+    @command_writer()
+    def request_units(self) -> DeskCommand:
+        """Query the desk's configured display unit (inches or centimeters).
+
+        The desk responds with a 0x0E notification containing the current setting.
+        """
+        return DeskCommand(opcode=0x0E, payload=b"")
 
     @command_writer()
     def set_units(self, unit: DeskUnit) -> DeskCommand:

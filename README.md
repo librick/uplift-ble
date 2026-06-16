@@ -119,6 +119,8 @@ All attribute values sent to `0xFE61` (commands) and received from `0xFE62` (not
 | ------ | ------ | ----------------------------------------- | ---------------------------------------------------------------------- |
 | 0x01   | 0      | `0xF1,0xF1,0x01,0x00,0x01,0x7E`           | Move desk up                                                           |
 | 0x02   | 0      | `0xF1,0xF1,0x02,0x00,0x02,0x7E`           | Move desk down                                                         |
+| 0x03   | 0      | `0xF1,0xF1,0x03,0x00,0x03,0x7E`           | Save current height as height preset 1                                 |
+| 0x04   | 0      | `0xF1,0xF1,0x04,0x00,0x04,0x7E`           | Save current height as height preset 2                                 |
 | 0x05   | 0      | `0xF1,0xF1,0x05,0x00,0x05,0x7E`           | Move to height preset 1                                                |
 | 0x06   | 0      | `0xF1,0xF1,0x06,0x00,0x06,0x7E`           | Move to height preset 2                                                |
 | 0x07   | 0      | `0xF1,0xF1,0x07,0x00,0x07,0x7E`           | Request height limits                                                  |
@@ -133,6 +135,7 @@ All attribute values sent to `0xFE61` (commands) and received from `0xFE62` (not
 | 0x23   | 1      | `0xF1,0xF1,0x23,0x01,0x01,0x25,0x7E`      | Clear height limit max                                                 |
 | 0x23   | 1      | `0xF1,0xF1,0x23,0x01,0x02,0x26,0x7E`      | Clear height limit min                                                 |
 | 0x2B   | 0      | `0xF1,0xF1,0x2B,0x00,0x2B,0x7E`           | Stop movement                                                          |
+| 0x0E   | 0      | `0xF1,0xF1,0x0E,0x00,0x0E,0x7E`           | Query current display units (response via 0x0E notification)           |
 | 0x0E   | 1      | `0xF1,0xF1,0x0E,0x01,0x00,0x0F,0x7E`      | Set units to centimeters                                               |
 | 0x0E   | 1      | `0xF1,0xF1,0x0E,0x01,0x01,0x10,0x7E`      | Set units to inches                                                    |
 | 0xFE   | 0      | `0xF1,0xF1,0xFE,0x00,0xFE,0x7E`           | Reset                                                                  |
@@ -143,7 +146,7 @@ Some of commands above were found by reverse-engineering the Uplift app (v1.1.0)
 
 | Opcode | Payload Length | Purpose                                                                                                          | Factory Value (taken from V2-Commercial model) |
 | ------ | -------------- | ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
-| 0x01   | 3              | Reports the height of the desk in 0.1 mm (100 µm) increments. Byte 0: unknown (usually 0x00), Bytes 1-2: height. | Unknown                                        |
+| 0x01   | 3              | Reports the desk height in tenths of the configured display unit (inches or cm per 0x0E setting). Bytes 0-1: height (big-endian), Byte 2: unknown. | Unknown                                        |
 | 0x02   | 1              | Reports desk error conditions via single-byte error codes.                                                       | N/A                                            |
 | 0x04   | 0              | Seen when the desk is in an error state and the display shows **RST**.                                           | N/A                                            |
 | 0x07   | 4              | Reports height limit configuration. Bytes 0-1: max height (mm), Bytes 2-3: min height (mm).                      | Unknown                                        |
