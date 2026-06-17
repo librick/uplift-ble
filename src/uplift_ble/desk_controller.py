@@ -574,16 +574,6 @@ class DeskController:
         return DeskCommand(opcode=0x02, payload=b"")
 
     @command_writer()
-    def move_to_height_preset_1(self) -> DeskCommand:
-        """Recall height preset 1 (move the desk to the stored position)."""
-        return DeskCommand(opcode=0x05, payload=b"")
-
-    @command_writer()
-    def move_to_height_preset_2(self) -> DeskCommand:
-        """Recall height preset 2 (move the desk to the stored position)."""
-        return DeskCommand(opcode=0x06, payload=b"")
-
-    @command_writer()
     def save_height_preset_1(self) -> DeskCommand:
         """Save the current desk height as height preset 1."""
         return DeskCommand(opcode=0x03, payload=b"")
@@ -592,6 +582,16 @@ class DeskController:
     def save_height_preset_2(self) -> DeskCommand:
         """Save the current desk height as height preset 2."""
         return DeskCommand(opcode=0x04, payload=b"")
+
+    @command_writer()
+    def move_to_height_preset_1(self) -> DeskCommand:
+        """Recall height preset 1 (move the desk to the stored position)."""
+        return DeskCommand(opcode=0x05, payload=b"")
+
+    @command_writer()
+    def move_to_height_preset_2(self) -> DeskCommand:
+        """Recall height preset 2 (move the desk to the stored position)."""
+        return DeskCommand(opcode=0x06, payload=b"")
 
     @command_writer()
     def request_height_limits(self) -> DeskCommand:
