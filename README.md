@@ -42,26 +42,33 @@ The compatibility table below provides rough guidance based on unofficial feedba
 
 | Functionality                          | Uplift (0x00FF) | Uplift (0xFE60) | Uplift (0xFF00) | Uplift (0xFF12) | Desky | Omnidesk | Vari | Jarvis | DeskHaus |
 | -------------------------------------- | --------------- | --------------- | --------------- | --------------- | ----- | -------- | ---- | ------ | -------- |
-| wake                                   | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
-| move_up                                | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
-| move_down                              | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
-| save_height_preset_1                   | ⚠️              | ✅              | ✅              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
-| save_height_preset_2                   | ⚠️              | ✅              | ✅              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
-| move_to_height_preset_1                | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
-| move_to_height_preset_2                | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
+| wake                                   | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
+| move_up                                | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
+| move_down                              | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
+| save_height_preset_1                   | ⚠️              | ✅              | ✅              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
+| save_height_preset_2                   | ⚠️              | ✅              | ✅              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
+| move_to_height_preset_1                | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
+| move_to_height_preset_2                | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
 | request_height_limits                  | ⚠️              | ⚠️              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
-| request_units                          | ⚠️              | ❌              | ✅              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
+| request_units                          | ⚠️              | ❌              | ✅              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
 | set_calibration_offset                 | ⚠️              | ⚠️              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
 | set_height_limit_max                   | ⚠️              | ⚠️              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
-| move_to_specified_height               | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
+| move_to_specified_height               | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
 | set_current_height_as_height_limit_max | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
 | set_current_height_as_height_limit_min | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
 | clear_height_limit_max                 | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
 | clear_height_limit_min                 | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
-| stop_movement                          | ⚠️              | ⚠️              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
-| set_units_to_centimeters               | ⚠️              | ❌              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
-| set_units_to_inches                    | ⚠️              | ❌              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
+| stop_movement                          | ⚠️              | ⚠️              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
+| set_units_to_centimeters               | ⚠️              | ❌              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
+| set_units_to_inches                    | ⚠️              | ❌              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
 | reset                                  | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
+
+DeskHaus verification was performed with a Jiecang `0xFE60` BLE module
+(`L-BTMEB95-07014-03`, firmware `v1.01.Jul 25 2023`). Commands marked ✅ in
+the DeskHaus column were exercised against physical desk movement or an
+observed controller response. `request_height_limits` did not produce a
+response on this configuration; configuration, calibration, limit, and reset
+commands not marked ✅ remain unverified.
 
 ## Running the CLI
 
