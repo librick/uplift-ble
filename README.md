@@ -63,12 +63,6 @@ The compatibility table below provides rough guidance based on unofficial feedba
 | set_units_to_inches                    | ⚠️              | ❌              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
 | reset                                  | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
 
-DeskHaus verification was performed with a Jiecang `0xFE60` BLE module
-(`L-BTMEB95-07014-03`, firmware `v1.01.Jul 25 2023`). Commands marked ✅ in
-the DeskHaus column were exercised against physical desk movement or an
-observed controller response. `request_height_limits` did not produce a
-response on this configuration; configuration, calibration, limit, and reset
-commands not marked ✅ remain unverified.
 
 ## Running the CLI
 
