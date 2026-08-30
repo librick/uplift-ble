@@ -175,6 +175,22 @@ Some of commands above were found by reverse-engineering the Uplift app (v1.1.0)
 | 0x27   | 2              | Reports height preset 3. Units vary by hardware/firmware. (2‑byte, big‑endian).                                                                    | Unknown                                        |
 | 0x28   | 2              | Reports height preset 4. Units vary by hardware/firmware. (2‑byte, big‑endian).                                                                    | Unknown                                        |
 
+Some desk profiles do not reliably report opcode `0x0E`. Callers can configure
+a fallback display unit when creating a controller for those desks. An explicit
+`0x0E` report remains authoritative when available.
+
+```python
+from uplift_ble.desk_enums import DeskUnit
+
+controller = desk.create_controller(
+    client,
+    fallback_unit=DeskUnit.CENTIMETERS,
+)
+```
+
+Use a fallback only when the desk's configured display unit is known. An
+incorrect fallback produces incorrect heights until the desk reports its unit.
+
 There may exist notification packets whose opcodes and payload structures are unknown. PRs are welcome!
 
 ### Calibration Offset

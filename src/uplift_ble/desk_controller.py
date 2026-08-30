@@ -91,12 +91,26 @@ class DeskController:
         output_char_uuid: str,
         requires_wake: bool,
         notification_timeout: float = 1.0,
+        fallback_unit: DeskUnit | None = None,
     ):
+        """Initialize a BLE desk controller.
+
+        Args:
+            client: Connected BLE client used to communicate with the desk.
+            input_char_uuid: Characteristic UUID used to send commands.
+            output_char_uuid: Characteristic UUID used to receive notifications.
+            requires_wake: Whether commands require wake packets first.
+            notification_timeout: Seconds to wait for notifications after commands.
+            fallback_unit: Display unit used for height conversion only when the
+                desk has not reported one. An incorrect fallback produces incorrect
+                heights until an explicit unit report arrives.
+        """
         self.client = client
         self.input_char_uuid = input_char_uuid
         self.output_char_uuid = output_char_uuid
         self.requires_wake = requires_wake
         self._notification_timeout = notification_timeout
+        self._fallback_unit = fallback_unit
         self._notification_queue: asyncio.Queue[bytes] = asyncio.Queue()
         self._processor_task = None
         self._listeners = {}
@@ -128,12 +142,20 @@ class DeskController:
     def height_mm(self) -> float | None:
         """Current desk height in millimeters, converted from display units (read-only).
 
-        Returns None if height or display unit has not been received yet.
+        Returns None if height has not been received, or if no reported or
+        fallback unit is available.
         """
-        if self._height_raw is None or self._height_raw_unit is None:
+        if self._height_raw is None:
             return None
         tenths = self._height_raw
-        if self._height_raw_unit == DeskUnit.INCHES:
+        height_unit = (
+            self._height_raw_unit
+            if self._height_raw_unit is not None
+            else self._fallback_unit
+        )
+        if height_unit is None:
+            return None
+        if height_unit == DeskUnit.INCHES:
             return convert_in_to_mm(tenths / 10.0)
         return convert_cm_to_mm(tenths / 10.0)
 
@@ -297,7 +319,8 @@ class DeskController:
 
         The height value is in tenths of the desk's configured display unit:
         tenths of inches when set to inches, tenths of centimeters when set to
-        centimeters.  The display unit can be queried with ``request_units``.
+        centimeters. The display unit can be queried with ``request_units`` or
+        supplied as a fallback when constructing the controller.
         """
         expected_len = 3
         if len(payload) != expected_len:
@@ -375,8 +398,9 @@ class DeskController:
         - 0x01: Inches
 
         The desk reports height values (opcode 0x01) in tenths of the configured
-        display unit, so this setting is required to correctly interpret heights.
-        Send opcode 0x0E with an empty payload to query the current setting.
+        display unit. This setting is authoritative when available and replaces
+        any configured fallback. Send opcode 0x0E with an empty payload to query
+        the current setting.
         """
         expected_len = 1
         if len(payload) != expected_len:
@@ -386,12 +410,14 @@ class DeskController:
         if unit is None:
             self._log_payload_unknown_enum_warning(0x0E, payload[0], "unit")
             return
+        previous_height_mm = self.height_mm
         self._unit = unit
-        self._emit(DeskEventType.UNIT, self._unit)
         if self._height_raw is not None and self._height_raw_unit is None:
             self._height_raw_unit = unit
+        self._emit(DeskEventType.UNIT, self._unit)
+        if self._height_raw is not None:
             height_mm = self.height_mm
-            if height_mm is not None:
+            if height_mm is not None and height_mm != previous_height_mm:
                 self._emit(DeskEventType.HEIGHT, height_mm)
 
     def _process_notification_0x19(self, payload: bytes) -> None:
