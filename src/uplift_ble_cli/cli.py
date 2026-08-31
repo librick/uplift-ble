@@ -234,6 +234,22 @@ async def move_to_height_preset_2(controller: DeskController):
 
 @cli.command()
 @with_desk_controller
+async def move_to_height_preset_3(controller: DeskController):
+    """Move the desk to programmed height preset 3."""
+    await controller.move_to_height_preset_3()
+    click.echo("Sent command to move desk to height preset 3", err=True)
+
+
+@cli.command()
+@with_desk_controller
+async def move_to_height_preset_4(controller: DeskController):
+    """Move the desk to programmed height preset 4."""
+    await controller.move_to_height_preset_4()
+    click.echo("Sent command to move desk to height preset 4", err=True)
+
+
+@cli.command()
+@with_desk_controller
 async def request_height_limits(controller: DeskController):
     """Request the desk's current height limits."""
     await controller.request_height_limits()

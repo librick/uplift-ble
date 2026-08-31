@@ -49,6 +49,8 @@ The compatibility table below provides rough guidance based on unofficial feedba
 | save_height_preset_2                   | ⚠️              | ✅              | ✅              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
 | move_to_height_preset_1                | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
 | move_to_height_preset_2                | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
+| move_to_height_preset_3                | ✅              | ⚠️              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
+| move_to_height_preset_4                | ✅              | ⚠️              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
 | request_height_limits                  | ⚠️              | ⚠️              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
 | request_units                          | ⚠️              | ❌              | ✅              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
 | set_calibration_offset                 | ⚠️              | ⚠️              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
@@ -63,6 +65,9 @@ The compatibility table below provides rough guidance based on unofficial feedba
 | set_units_to_inches                    | ⚠️              | ❌              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
 | reset                                  | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
 
+Height preset 3 and 4 recall was verified on 2026-08-29 with an official Uplift
+V3 adapter discovered through the `0x00FF` profile and using FF00 control
+characteristics.
 
 ## Running the CLI
 
@@ -139,6 +144,8 @@ All attribute values sent to `0xFE61` (commands) and received from `0xFE62` (not
 | 0x22   | 0      | `0xF1,0xF1,0x22,0x00,0x22,0x7E`           | Set current height as height limit min                                 |
 | 0x23   | 1      | `0xF1,0xF1,0x23,0x01,0x01,0x25,0x7E`      | Clear height limit max                                                 |
 | 0x23   | 1      | `0xF1,0xF1,0x23,0x01,0x02,0x26,0x7E`      | Clear height limit min                                                 |
+| 0x27   | 0      | `0xF1,0xF1,0x27,0x00,0x27,0x7E`           | Move to height preset 3                                                |
+| 0x28   | 0      | `0xF1,0xF1,0x28,0x00,0x28,0x7E`           | Move to height preset 4                                                |
 | 0x2B   | 0      | `0xF1,0xF1,0x2B,0x00,0x2B,0x7E`           | Stop movement                                                          |
 | 0x0E   | 0      | `0xF1,0xF1,0x0E,0x00,0x0E,0x7E`           | Query current display units (response via 0x0E notification)           |
 | 0x0E   | 1      | `0xF1,0xF1,0x0E,0x01,0x00,0x0F,0x7E`      | Set units to centimeters                                               |
