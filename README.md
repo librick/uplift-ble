@@ -32,13 +32,13 @@ This library was originally written to support a BLE adapter sold by [Uplift Des
 
 This library uses **undocumented**, **vendor-specific commands** that can access hidden desk functions beyond normal user controls, including minimum/maximum height limits, motor speed, and leg synchronization. **This poses real safety risks.**
 
-Additionally, a command that appears to work safely on one brand (e.g., Uplift Desk) may trigger completely different and potentially dangerous behavior on another brand (e.g., Desky), even if both use Jiecang components. Even within a single brand, different hardware revisions may exist with different behavior. For example, Uplift desks have at least three variants identified by their Bluetooth service UUIDs: 0xFF00, 0xFE60, 0xFF12 (see table columns).
+Additionally, a command that appears to work safely on one brand (e.g., Uplift Desk) may trigger completely different and potentially dangerous behavior on another brand (e.g., Desky), even if both use Jiecang components. Even within a single brand, different hardware revisions may exist with different behavior. For example, Uplift adapters have been reported under several different Bluetooth service UUIDs (see table columns). Even then, service UUIDs are a coarse metric for grouping hardware; there is nothing stopping two completely different adapters from advertising identical service UUIDs.
 
 The compatibility table below provides rough guidance based on unofficial feedback from developers, but **we DO NOT guarantee safety or functionality for any desk**. Use this library at your own risk. Always test commands cautiously with the desk clear of obstacles and be prepared to manually stop desk movement.
 
 ✅ = Verified working\
 ⚠️ = Potentially working (proceed with caution)\
-🛑 = Verified not working
+❌ = Verified not working
 
 | Functionality                          | Uplift (0x00FF) | Uplift (0xFE60) | Uplift (0xFF00) | Uplift (0xFF12) | Desky | Omnidesk | Vari | Jarvis | DeskHaus |
 | -------------------------------------- | --------------- | --------------- | --------------- | --------------- | ----- | -------- | ---- | ------ | -------- |
@@ -133,7 +133,6 @@ All attribute values sent to `0xFE61` (commands) and received from `0xFE62` (not
 | 0x05   | 0      | `0xF1,0xF1,0x05,0x00,0x05,0x7E`           | Move to height preset 1                                                |
 | 0x06   | 0      | `0xF1,0xF1,0x06,0x00,0x06,0x7E`           | Move to height preset 2                                                |
 | 0x07   | 0      | `0xF1,0xF1,0x07,0x00,0x07,0x7E`           | Request height limits                                                  |
-| 0x0E   | 0      | `0xF1,0xF1,0x0E,0x00,0x0E,0x7E`           | Request units                                                          |
 | 0x10   | 2      | `0xF1,0xF1,0x10,0x02,0xCA,0xFE,0xDB,0x7E` | Set calibration offset                                                 |
 | 0x11   | 2      | `0xF1,0xF1,0x11,0x02,0xCA,0xFE,0xDC,0x7E` | Set height limit max                                                   |
 | 0x12   | 2      | `0xF1,0xF1,0x12,0x02,0x01,0x00,0x15,0x7E` | Not fully known; potentially dangerous. Sets some configuration value. |
