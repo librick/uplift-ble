@@ -38,7 +38,7 @@ The compatibility table below provides rough guidance based on unofficial feedba
 
 ✅ = Verified working\
 ⚠️ = Potentially working (proceed with caution)\
-🛑 = Verified not working
+❌ = Verified not working
 
 | Functionality                          | Uplift (0x00FF) | Uplift (0xFE60) | Uplift (0xFF00) | Uplift (0xFF12) | Desky | Omnidesk | Vari | Jarvis | DeskHaus |
 | -------------------------------------- | --------------- | --------------- | --------------- | --------------- | ----- | -------- | ---- | ------ | -------- |
