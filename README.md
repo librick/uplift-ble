@@ -32,7 +32,7 @@ This library was originally written to support a BLE adapter sold by [Uplift Des
 
 This library uses **undocumented**, **vendor-specific commands** that can access hidden desk functions beyond normal user controls, including minimum/maximum height limits, motor speed, and leg synchronization. **This poses real safety risks.**
 
-Additionally, a command that appears to work safely on one brand (e.g., Uplift Desk) may trigger completely different and potentially dangerous behavior on another brand (e.g., Desky), even if both use Jiecang components. Even within a single brand, different hardware revisions may exist with different behavior. For example, Uplift desks have at least three variants identified by their Bluetooth service UUIDs: 0xFF00, 0xFE60, 0xFF12 (see table columns).
+Additionally, a command that appears to work safely on one brand (e.g., Uplift Desk) may trigger completely different and potentially dangerous behavior on another brand (e.g., Desky), even if both use Jiecang components. Even within a single brand, different hardware revisions may exist with different behavior. For example, Uplift adapters have been reported under several different Bluetooth service UUIDs (see table columns). Even then, service UUIDs are a coarse metric for grouping hardware; there is nothing stopping two completely different adapters from advertising identical service UUIDs.
 
 The compatibility table below provides rough guidance based on unofficial feedback from developers, but **we DO NOT guarantee safety or functionality for any desk**. Use this library at your own risk. Always test commands cautiously with the desk clear of obstacles and be prepared to manually stop desk movement.
 
