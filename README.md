@@ -40,33 +40,33 @@ The compatibility table below provides rough guidance based on unofficial feedba
 ⚠️ = Potentially working (proceed with caution)\
 ❌ = Verified not working
 
-| Functionality                          | Uplift (0x00FF) | Uplift (0xFE60) | Uplift (0xFF00) | Uplift (0xFF12) | Desky | Omnidesk | Vari | Jarvis | DeskHaus |
-| -------------------------------------- | --------------- | --------------- | --------------- | --------------- | ----- | -------- | ---- | ------ | -------- |
-| wake                                   | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
-| move_up                                | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
-| move_down                              | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
-| save_height_preset_1                   | ⚠️              | ✅              | ✅              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
-| save_height_preset_2                   | ⚠️              | ✅              | ✅              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
-| move_to_height_preset_1                | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
-| move_to_height_preset_2                | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
-| move_to_height_preset_3                | ✅              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
-| move_to_height_preset_4                | ✅              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
-| request_height_limits                  | ⚠️              | ⚠️              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
-| request_units                          | ⚠️              | ❌              | ✅              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
-| set_calibration_offset                 | ⚠️              | ⚠️              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
-| set_height_limit_max                   | ⚠️              | ⚠️              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
-| move_to_specified_height               | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
-| set_current_height_as_height_limit_max | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
-| set_current_height_as_height_limit_min | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
-| clear_height_limit_max                 | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
-| clear_height_limit_min                 | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
-| stop_movement                          | ⚠️              | ⚠️              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
-| set_units_to_centimeters               | ⚠️              | ❌              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
-| set_units_to_inches                    | ⚠️              | ❌              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
-| reset                                  | ⚠️              | ✅              | ⚠️              | ⚠️              | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
+| Functionality                          | Uplift (Service 0x00FF) | Uplift (Service 0xFE60) | Uplift (Service 0xFF00) | Uplift (Service 0xFF12) | Desky | Omnidesk | Vari | Jarvis | DeskHaus |
+| -------------------------------------- | ----------------------- | ----------------------- | ----------------------- | ----------------------- | ----- | -------- | ---- | ------ | -------- |
+| wake                                   | ⚠️                      | ✅                      | ⚠️                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
+| move_up                                | ⚠️                      | ✅                      | ⚠️                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
+| move_down                              | ⚠️                      | ✅                      | ⚠️                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
+| save_height_preset_1                   | ⚠️                      | ✅                      | ✅                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
+| save_height_preset_2                   | ⚠️                      | ✅                      | ✅                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
+| move_to_height_preset_1                | ✅                      | ✅                      | ⚠️                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
+| move_to_height_preset_2                | ✅                      | ✅                      | ⚠️                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
+| move_to_height_preset_3                | ✅                      | ✅                      | ⚠️                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
+| move_to_height_preset_4                | ✅                      | ✅                      | ⚠️                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
+| request_height_limits                  | ⚠️                      | ⚠️                      | ⚠️                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
+| request_units                          | ⚠️                      | ❌                      | ✅                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
+| set_calibration_offset                 | ⚠️                      | ⚠️                      | ⚠️                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
+| set_height_limit_max                   | ⚠️                      | ⚠️                      | ⚠️                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
+| move_to_specified_height               | ⚠️                      | ✅                      | ⚠️                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
+| set_current_height_as_height_limit_max | ⚠️                      | ✅                      | ⚠️                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
+| set_current_height_as_height_limit_min | ⚠️                      | ✅                      | ⚠️                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
+| clear_height_limit_max                 | ⚠️                      | ✅                      | ⚠️                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
+| clear_height_limit_min                 | ⚠️                      | ✅                      | ⚠️                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
+| stop_movement                          | ⚠️                      | ⚠️                      | ⚠️                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
+| set_units_to_centimeters               | ⚠️                      | ❌                      | ⚠️                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
+| set_units_to_inches                    | ⚠️                      | ❌                      | ⚠️                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
+| reset                                  | ⚠️                      | ✅                      | ⚠️                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
 
-Height preset 3 and 4 recall was verified on 2026-08-29 with an official Uplift
-V3 adapter discovered through the `0x00FF` profile and using FF00 control
+Height preset 1 through 4 recall was verified on 2026-08-29 with an official
+Uplift V3 adapter advertising service `0x00FF` and using FF00-family control
 characteristics.
 
 ## Running the CLI
