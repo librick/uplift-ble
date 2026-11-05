@@ -610,6 +610,24 @@ class DeskController:
         return DeskCommand(opcode=0x04, payload=b"")
 
     @command_writer()
+    def save_height_preset_3(self) -> DeskCommand:
+        """Save the current desk height as height preset 3.
+
+        Opcode 0x25 also identifies incoming preset 1 reports; the BLE
+        characteristic direction distinguishes the command from the report.
+        """
+        return DeskCommand(opcode=0x25, payload=b"")
+
+    @command_writer()
+    def save_height_preset_4(self) -> DeskCommand:
+        """Save the current desk height as height preset 4.
+
+        Opcode 0x26 also identifies incoming preset 2 reports; the BLE
+        characteristic direction distinguishes the command from the report.
+        """
+        return DeskCommand(opcode=0x26, payload=b"")
+
+    @command_writer()
     def move_to_height_preset_1(self) -> DeskCommand:
         """Recall height preset 1 (move the desk to the stored position)."""
         return DeskCommand(opcode=0x05, payload=b"")

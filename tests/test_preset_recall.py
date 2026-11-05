@@ -20,6 +20,8 @@ def _create_controller() -> DeskController:
 @pytest.mark.parametrize(
     ("method_name", "opcode"),
     [
+        ("save_height_preset_3", 0x25),
+        ("save_height_preset_4", 0x26),
         ("move_to_height_preset_3", 0x27),
         ("move_to_height_preset_4", 0x28),
     ],

@@ -47,6 +47,8 @@ The compatibility table below provides rough guidance based on unofficial feedba
 | move_down                              | ⚠️                      | ✅                      | ⚠️                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
 | save_height_preset_1                   | ⚠️                      | ✅                      | ✅                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
 | save_height_preset_2                   | ⚠️                      | ✅                      | ✅                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
+| save_height_preset_3                   | ✅                      | ⚠️                      | ⚠️                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
+| save_height_preset_4                   | ✅                      | ⚠️                      | ⚠️                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
 | move_to_height_preset_1                | ✅                      | ✅                      | ⚠️                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
 | move_to_height_preset_2                | ✅                      | ✅                      | ⚠️                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
 | move_to_height_preset_3                | ✅                      | ✅                      | ⚠️                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
@@ -68,6 +70,10 @@ The compatibility table below provides rough guidance based on unofficial feedba
 Height preset 1 through 4 recall was verified on 2026-08-29 with an official
 Uplift V3 adapter advertising service `0x00FF` and using FF00-family control
 characteristics.
+
+Height preset 3 and 4 saving was verified on 2026-10-25 with the same
+adapter: each save changed only its own slot's report and did not move the
+desk.
 
 ## Running the CLI
 
@@ -130,6 +136,8 @@ All attribute values sent to `0xFE61` (commands) and received from `0xFE62` (not
 | 0x02   | 0      | `0xF1,0xF1,0x02,0x00,0x02,0x7E`           | Move desk down                                                         |
 | 0x03   | 0      | `0xF1,0xF1,0x03,0x00,0x03,0x7E`           | Save current height as height preset 1                                 |
 | 0x04   | 0      | `0xF1,0xF1,0x04,0x00,0x04,0x7E`           | Save current height as height preset 2                                 |
+| 0x25   | 0      | `0xF1,0xF1,0x25,0x00,0x25,0x7E`           | Save current height as height preset 3                                 |
+| 0x26   | 0      | `0xF1,0xF1,0x26,0x00,0x26,0x7E`           | Save current height as height preset 4                                 |
 | 0x05   | 0      | `0xF1,0xF1,0x05,0x00,0x05,0x7E`           | Move to height preset 1                                                |
 | 0x06   | 0      | `0xF1,0xF1,0x06,0x00,0x06,0x7E`           | Move to height preset 2                                                |
 | 0x07   | 0      | `0xF1,0xF1,0x07,0x00,0x07,0x7E`           | Request height limits                                                  |

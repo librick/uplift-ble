@@ -218,6 +218,26 @@ async def save_height_preset_2(controller: DeskController):
 
 @cli.command()
 @with_desk_controller
+async def save_height_preset_3(controller: DeskController):
+    """Save the current desk height as height preset 3."""
+    await controller.save_height_preset_3()
+    click.echo(
+        "Sent command to save desk's current height as height preset 3", err=True
+    )
+
+
+@cli.command()
+@with_desk_controller
+async def save_height_preset_4(controller: DeskController):
+    """Save the current desk height as height preset 4."""
+    await controller.save_height_preset_4()
+    click.echo(
+        "Sent command to save desk's current height as height preset 4", err=True
+    )
+
+
+@cli.command()
+@with_desk_controller
 async def move_to_height_preset_1(controller: DeskController):
     """Move the desk to programmed height preset 1."""
     await controller.move_to_height_preset_1()
