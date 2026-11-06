@@ -47,8 +47,8 @@ The compatibility table below provides rough guidance based on unofficial feedba
 | move_down                              | ⚠️                      | ✅                      | ⚠️                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
 | save_height_preset_1                   | ⚠️                      | ✅                      | ✅                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
 | save_height_preset_2                   | ⚠️                      | ✅                      | ✅                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
-| save_height_preset_3                   | ✅                      | ⚠️                      | ⚠️                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
-| save_height_preset_4                   | ✅                      | ⚠️                      | ⚠️                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
+| save_height_preset_3                   | ✅                      | ✅                      | ⚠️                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
+| save_height_preset_4                   | ✅                      | ✅                      | ⚠️                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
 | move_to_height_preset_1                | ✅                      | ✅                      | ⚠️                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
 | move_to_height_preset_2                | ✅                      | ✅                      | ⚠️                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
 | move_to_height_preset_3                | ✅                      | ✅                      | ⚠️                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
