@@ -45,8 +45,8 @@ The compatibility table below provides rough guidance based on unofficial feedba
 | wake                                   | ⚠️                      | ✅                      | ⚠️                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
 | move_up                                | ⚠️                      | ✅                      | ⚠️                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
 | move_down                              | ⚠️                      | ✅                      | ⚠️                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
-| save_height_preset_1                   | ⚠️                      | ✅                      | ✅                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
-| save_height_preset_2                   | ⚠️                      | ✅                      | ✅                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
+| save_height_preset_1                   | ✅                      | ✅                      | ✅                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
+| save_height_preset_2                   | ✅                      | ✅                      | ✅                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
 | save_height_preset_3                   | ✅                      | ✅                      | ⚠️                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
 | save_height_preset_4                   | ✅                      | ✅                      | ⚠️                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
 | move_to_height_preset_1                | ✅                      | ✅                      | ⚠️                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
