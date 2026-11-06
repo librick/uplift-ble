@@ -46,64 +46,68 @@ def parse_notification_packets(data: bytes) -> list[PacketNotification]:
     parsing and returning all valid packets.
 
     Notification packets are very similar to command packets, except that they
-    use the header byte sequence 0xF2F2 instead of 0xF1F1.
+    use the header byte sequence 0xF2F2 instead of 0xF1F1. Some adapters send
+    only one 0xF2 on every packet after the first in a burst, so a single-byte
+    header is accepted when the length, checksum, and trailer are all valid.
     """
     packets: list[PacketNotification] = []
     i = 0
     length = len(data)
-    while i + 6 <= length:
-        # Look for header
-        if data[i : i + 2] != b"\xf2\xf2":
+    while i + 5 <= length:
+        if data[i] != 0xF2:
             i += 1
             continue
 
-        # Read length byte
-        if i + 4 > length:
-            break
-        payload_len = data[i + 3]
-        total_len = 2 + 1 + 1 + payload_len + 1 + 1
+        p = None
+        for header_len in (2, 1) if data[i : i + 2] == b"\xf2\xf2" else (1,):
+            if i + header_len + 2 > length:
+                continue
+            payload_len = data[i + header_len + 1]
+            total_len = header_len + 1 + 1 + payload_len + 1 + 1
+            if i + total_len > length:
+                continue
+            p = _parse_notification_packet(data[i : i + total_len], header_len)
+            if p is not None:
+                break
 
-        # Check if full packet present
-        if i + total_len > length:
-            break
-
-        packet_bytes = data[i : i + total_len]
-        p = _parse_notification_packet(packet_bytes)
         if p is not None:
             packets.append(p)
             i += total_len
         else:
-            # Skip this header and continue
+            # Skip this header byte and continue
             i += 1
 
     return packets
 
 
-def _parse_notification_packet(data: bytes) -> PacketNotification | None:
+def _parse_notification_packet(
+    data: bytes, header_len: int = 2
+) -> PacketNotification | None:
     """
     Try to parse a single PacketNotification from exactly one packet in 'data'.
+    'header_len' is the number of leading 0xF2 bytes (2, or 1 for a short header).
     Returns PacketNotification or None if invalid.
     """
-    # Minimum packet length: header(2) + opcode(1) + length(1) + checksum(1) + trailer(1)
-    if len(data) < 6:
+    # Minimum packet length: header + opcode(1) + length(1) + checksum(1) + trailer(1)
+    if len(data) < header_len + 4:
         return None
 
     # Header
-    if data[0:2] != b"\xf2\xf2":
+    if data[0:header_len] != b"\xf2" * header_len:
         return None
 
     # Trailer
     if data[-1] != 0x7E:
         return None
 
-    opcode = data[2]
-    payload_len = data[3]
-    expected_total = 2 + 1 + 1 + payload_len + 1 + 1
+    opcode = data[header_len]
+    payload_len = data[header_len + 1]
+    expected_total = header_len + 1 + 1 + payload_len + 1 + 1
     if len(data) != expected_total:
         return None
 
     # Extract payload and checksum
-    payload = data[4 : 4 + payload_len]
+    payload = data[header_len + 2 : header_len + 2 + payload_len]
     checksum = data[-2]
 
     # Validate checksum

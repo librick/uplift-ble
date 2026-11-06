@@ -1,6 +1,10 @@
 import pytest
 
-from uplift_ble.packet import _compute_checksum, create_command_packet
+from uplift_ble.packet import (
+    _compute_checksum,
+    create_command_packet,
+    parse_notification_packets,
+)
 
 
 def test_opcode_out_of_range_negative():
@@ -130,3 +134,36 @@ def test_compute_checksum_opcode_out_of_range_too_large():
     with pytest.raises(ValueError) as exc:
         _compute_checksum(0x100, b"")
     assert "opcode not in range" in str(exc.value)
+
+
+# One preset query (0x07) response captured from an official UPLIFT V3 adapter
+# advertising service 0x00FF: only the first notification carries both 0xF2 bytes.
+CAPTURED_PRESET_BURST = [
+    "f2f2250202b9e27e",
+    "f2260202ec167e",
+    "f2270203e6127e",
+    "f228020434627e",
+]
+
+
+def test_parse_notification_accepts_captured_short_headers():
+    packets = [
+        packet
+        for frame in CAPTURED_PRESET_BURST
+        for packet in parse_notification_packets(bytes.fromhex(frame))
+    ]
+    assert [(p.opcode, int.from_bytes(p.payload, "big")) for p in packets] == [
+        (0x25, 697),
+        (0x26, 748),
+        (0x27, 998),
+        (0x28, 1076),
+    ]
+
+
+def test_parse_notification_reads_back_to_back_short_headers():
+    data = bytes.fromhex("".join(CAPTURED_PRESET_BURST))
+    assert len(parse_notification_packets(data)) == len(CAPTURED_PRESET_BURST)
+
+
+def test_parse_notification_rejects_short_header_with_bad_checksum():
+    assert parse_notification_packets(bytes.fromhex("f2260202ec177e")) == []
