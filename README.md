@@ -37,6 +37,7 @@ Additionally, a command that appears to work safely on one brand (e.g., Uplift D
 The compatibility table below provides rough guidance based on unofficial feedback from developers, but **we DO NOT guarantee safety or functionality for any desk**. Use this library at your own risk. Always test commands cautiously with the desk clear of obstacles and be prepared to manually stop desk movement.
 
 ✅ = Verified working\
+🌗 = Verified working for some but not all subvariants\
 ⚠️ = Potentially working (proceed with caution)\
 ❌ = Verified not working
 
@@ -54,7 +55,7 @@ The compatibility table below provides rough guidance based on unofficial feedba
 | move_to_height_preset_3                | ✅                      | ✅                      | ⚠️                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
 | move_to_height_preset_4                | ✅                      | ✅                      | ⚠️                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
 | request_height_limits                  | ⚠️                      | ⚠️                      | ⚠️                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
-| request_units                          | ⚠️                      | ❌                      | ✅                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
+| request_units                          | ⚠️                      | 🌗                      | ✅                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
 | set_calibration_offset                 | ⚠️                      | ⚠️                      | ⚠️                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
 | set_height_limit_max                   | ⚠️                      | ⚠️                      | ⚠️                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ⚠️       |
 | move_to_specified_height               | ⚠️                      | ✅                      | ⚠️                      | ⚠️                      | ⚠️    | ⚠️       | ⚠️   | ⚠️     | ✅       |
